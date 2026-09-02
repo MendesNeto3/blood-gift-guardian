@@ -33,7 +33,7 @@ export async function apiFetch<T>(
   const token = getToken();
   const response = await fetch(`${base}${path}`, {
     method: options.method ?? "GET",
-    signal: options.signal,
+    signal: options.signal ?? null,
     headers: {
       "Content-Type": "application/json",
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
