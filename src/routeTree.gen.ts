@@ -10,33 +10,154 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AgendamentosRouteImport } from './routes/agendamentos'
+import { Route as CentrosRouteImport } from './routes/centros'
+import { Route as CheckinRouteImport } from './routes/checkin'
+import { Route as DoadoresRouteImport } from './routes/doadores'
+import { Route as DocumentosRouteImport } from './routes/documentos'
+import { Route as EncontrarRouteImport } from './routes/encontrar'
+import { Route as EstoqueRouteImport } from './routes/estoque'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as ReservasRouteImport } from './routes/reservas'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AgendamentosRoute = AgendamentosRouteImport.update({
+  id: '/agendamentos',
+  path: '/agendamentos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CentrosRoute = CentrosRouteImport.update({
+  id: '/centros',
+  path: '/centros',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CheckinRoute = CheckinRouteImport.update({
+  id: '/checkin',
+  path: '/checkin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DoadoresRoute = DoadoresRouteImport.update({
+  id: '/doadores',
+  path: '/doadores',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocumentosRoute = DocumentosRouteImport.update({
+  id: '/documentos',
+  path: '/documentos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EncontrarRoute = EncontrarRouteImport.update({
+  id: '/encontrar',
+  path: '/encontrar',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EstoqueRoute = EstoqueRouteImport.update({
+  id: '/estoque',
+  path: '/estoque',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReservasRoute = ReservasRouteImport.update({
+  id: '/reservas',
+  path: '/reservas',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/agendamentos': typeof AgendamentosRoute
+  '/centros': typeof CentrosRoute
+  '/checkin': typeof CheckinRoute
+  '/doadores': typeof DoadoresRoute
+  '/documentos': typeof DocumentosRoute
+  '/encontrar': typeof EncontrarRoute
+  '/estoque': typeof EstoqueRoute
+  '/login': typeof LoginRoute
+  '/reservas': typeof ReservasRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/agendamentos': typeof AgendamentosRoute
+  '/centros': typeof CentrosRoute
+  '/checkin': typeof CheckinRoute
+  '/doadores': typeof DoadoresRoute
+  '/documentos': typeof DocumentosRoute
+  '/encontrar': typeof EncontrarRoute
+  '/estoque': typeof EstoqueRoute
+  '/login': typeof LoginRoute
+  '/reservas': typeof ReservasRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/agendamentos': typeof AgendamentosRoute
+  '/centros': typeof CentrosRoute
+  '/checkin': typeof CheckinRoute
+  '/doadores': typeof DoadoresRoute
+  '/documentos': typeof DocumentosRoute
+  '/encontrar': typeof EncontrarRoute
+  '/estoque': typeof EstoqueRoute
+  '/login': typeof LoginRoute
+  '/reservas': typeof ReservasRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/agendamentos'
+    | '/centros'
+    | '/checkin'
+    | '/doadores'
+    | '/documentos'
+    | '/encontrar'
+    | '/estoque'
+    | '/login'
+    | '/reservas'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/agendamentos'
+    | '/centros'
+    | '/checkin'
+    | '/doadores'
+    | '/documentos'
+    | '/encontrar'
+    | '/estoque'
+    | '/login'
+    | '/reservas'
+  id:
+    | '__root__'
+    | '/'
+    | '/agendamentos'
+    | '/centros'
+    | '/checkin'
+    | '/doadores'
+    | '/documentos'
+    | '/encontrar'
+    | '/estoque'
+    | '/login'
+    | '/reservas'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AgendamentosRoute: typeof AgendamentosRoute
+  CentrosRoute: typeof CentrosRoute
+  CheckinRoute: typeof CheckinRoute
+  DoadoresRoute: typeof DoadoresRoute
+  DocumentosRoute: typeof DocumentosRoute
+  EncontrarRoute: typeof EncontrarRoute
+  EstoqueRoute: typeof EstoqueRoute
+  LoginRoute: typeof LoginRoute
+  ReservasRoute: typeof ReservasRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +169,83 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/agendamentos': {
+      id: '/agendamentos'
+      path: '/agendamentos'
+      fullPath: '/agendamentos'
+      preLoaderRoute: typeof AgendamentosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/centros': {
+      id: '/centros'
+      path: '/centros'
+      fullPath: '/centros'
+      preLoaderRoute: typeof CentrosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/checkin': {
+      id: '/checkin'
+      path: '/checkin'
+      fullPath: '/checkin'
+      preLoaderRoute: typeof CheckinRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/doadores': {
+      id: '/doadores'
+      path: '/doadores'
+      fullPath: '/doadores'
+      preLoaderRoute: typeof DoadoresRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/documentos': {
+      id: '/documentos'
+      path: '/documentos'
+      fullPath: '/documentos'
+      preLoaderRoute: typeof DocumentosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/encontrar': {
+      id: '/encontrar'
+      path: '/encontrar'
+      fullPath: '/encontrar'
+      preLoaderRoute: typeof EncontrarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/estoque': {
+      id: '/estoque'
+      path: '/estoque'
+      fullPath: '/estoque'
+      preLoaderRoute: typeof EstoqueRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reservas': {
+      id: '/reservas'
+      path: '/reservas'
+      fullPath: '/reservas'
+      preLoaderRoute: typeof ReservasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AgendamentosRoute: AgendamentosRoute,
+  CentrosRoute: CentrosRoute,
+  CheckinRoute: CheckinRoute,
+  DoadoresRoute: DoadoresRoute,
+  DocumentosRoute: DocumentosRoute,
+  EncontrarRoute: EncontrarRoute,
+  EstoqueRoute: EstoqueRoute,
+  LoginRoute: LoginRoute,
+  ReservasRoute: ReservasRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

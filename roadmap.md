@@ -1,19 +1,20 @@
-# Roadmap — Sistema de Gerenciamento de Doações de Sangue
+# Roadmap — Bloodlink
 
 ## Design
-- [ ] Escolher direção de design (protótipos v1/v2/v3)
-- [ ] Aplicar tokens da direção escolhida em src/styles.css
+- [x] Direção escolhida: Chrome dusk data desk (v3), com destaque no nome da página ativa
+- [x] Tokens aplicados em src/styles.css (Anton/Inter/JetBrains Mono, gradiente horizon)
 
-## Módulos (baseados nos microserviços da API)
-- [ ] Autenticação (login, cadastro, perfis, papéis)
-- [ ] Centros de doação — criação/gestão (donation center)
-- [ ] Busca de centros de doação (serviço de encontro)
-- [ ] Agendamento de doações
-- [ ] Check-in de doadores
-- [ ] Gerenciamento de estoque (por tipo sanguíneo)
-- [ ] Documentos (upload/armazenamento)
-- [ ] Reservas de unidades de sangue
-- [ ] Dashboard geral
+## Módulos
+- [x] Autenticação (login/cadastro) — /login
+- [x] Centros de doação — criação/gestão — /centros
+- [x] Busca de centros — /encontrar
+- [x] Agendamento — /agendamentos
+- [x] Check-in — /checkin
+- [x] Estoque por tipo sanguíneo — /estoque
+- [x] Documentos — /documentos
+- [x] Reservas — /reservas
+- [x] Doadores — /doadores
+- [x] Dashboard — /
 
 ## Backend
-- [ ] Definir se usa Lovable Cloud ou integra com a API de microserviços existente
+- [ ] Dados de exemplo no front; conectar microserviços reais depois
