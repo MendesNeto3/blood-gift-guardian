@@ -94,7 +94,7 @@
   --sidebar-foreground: oklch(0.2 0.03 285);
   --sidebar-primary: oklch(0.55 0.15 35);
   --sidebar-primary-foreground: oklch(1 0 0);
-  --sidebar-accent: oklch(0.2 0.03 285 / 8%);
+  --sidebar-accent: oklch(1 0 0 / 88%);
   --sidebar-accent-foreground: oklch(0.2 0.03 285);
   --sidebar-border: oklch(0.2 0.03 285 / 12%);
   --sidebar-ring: oklch(0.55 0.15 35);
