@@ -5,6 +5,7 @@ import {
   CalendarClock,
   CalendarRange,
   ClipboardCheck,
+  Droplet,
   FileText,
   LayoutDashboard,
   MapPin,
@@ -29,8 +30,8 @@ export function AppShell({ children }: { children: ReactNode }) {
     <div className="min-h-screen bg-background text-foreground">
       <aside className="fixed inset-y-0 left-0 z-20 flex w-60 flex-col border-r border-sidebar-border bg-sidebar p-5 text-sidebar-foreground">
         <Link to="/" className="mb-6 flex items-center gap-3 px-2 py-2">
-          <div className="gradient-horizon grid size-9 place-items-center rounded-xl font-display text-lg text-sidebar-primary-foreground">
-            B
+          <div className="grid size-9 place-items-center rounded-full bg-white shadow-sm">
+            <Droplet className="size-5 fill-destructive text-destructive" strokeWidth={2.5} />
           </div>
           <div>
             <p className="text-sm leading-none font-semibold text-sidebar-accent-foreground">
