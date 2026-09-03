@@ -5,6 +5,7 @@ import {
   CalendarClock,
   CalendarRange,
   ClipboardCheck,
+  Droplet,
   FileText,
   LayoutDashboard,
   MapPin,
