@@ -63,7 +63,7 @@ export function AppShell({ children }: { children: ReactNode }) {
 
         <div className="mt-auto border-t border-sidebar-border pt-4">
           <div className="flex items-center gap-3 rounded-lg bg-sidebar-accent px-3 py-3">
-            <div className="gradient-chrome grid size-8 place-items-center rounded-full text-xs font-semibold text-sidebar-primary-foreground">
+            <div className="grid size-8 place-items-center rounded-full bg-primary text-xs font-semibold text-primary-foreground shadow-sm">
               MC
             </div>
             <div className="min-w-0 flex-1 text-xs">
