@@ -228,7 +228,7 @@ function DashboardPage() {
               className="grid grid-cols-12 items-center gap-4 px-4 py-3 text-sm transition-colors hover:bg-background/60"
             >
               <span className="col-span-4 flex items-center gap-3">
-                <span className="gradient-chrome-soft grid size-8 place-items-center rounded-full text-xs font-semibold text-foreground">
+                <span className="grid size-8 place-items-center rounded-full bg-primary text-xs font-semibold text-primary-foreground shadow-sm">
                   {d.initials}
                 </span>
                 <span className="font-medium">{d.name}</span>
