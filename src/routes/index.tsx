@@ -159,7 +159,7 @@ function DashboardPage() {
                   </div>
                   <div className="h-3 overflow-hidden rounded-full bg-background">
                     <div
-                      className={`h-full rounded-full transition-all duration-500 ${s.status === "critico" ? "pulse-critical bg-destructive" : "gradient-chrome"}`}
+                      className={`h-full rounded-full transition-all duration-500 ${s.status === "critico" ? "pulse-critical bg-destructive" : "bg-primary"}`}
                       style={{ width: `${pct}%` }}
                     />
                   </div>
