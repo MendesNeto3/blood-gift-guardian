@@ -53,7 +53,7 @@ function DoadoresPage() {
               className="grid grid-cols-12 items-center gap-4 px-6 py-4 text-sm transition-colors hover:bg-background/60"
             >
               <span className="col-span-4 flex items-center gap-3">
-                <span className="gradient-chrome-soft grid size-9 place-items-center rounded-full text-xs font-semibold">
+                <span className="grid size-9 place-items-center rounded-full bg-primary text-xs font-semibold text-primary-foreground shadow-sm">
                   {d.initials}
                 </span>
                 <span className="font-medium">{d.name}</span>
