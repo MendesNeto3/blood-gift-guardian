@@ -1,4 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { Droplet } from "lucide-react";
 import { useState, type FormEvent } from "react";
 
 export const Route = createFileRoute("/login")({
@@ -23,7 +24,7 @@ export const Route = createFileRoute("/login")({
 });
 
 const inputClass =
-  "w-full rounded-xl border border-input bg-background px-3.5 py-2.5 text-sm outline-none placeholder:text-muted-foreground/60 focus:ring-2 focus:ring-ring/40";
+  "w-full rounded-xl border border-input bg-card px-3.5 py-2.5 text-sm text-foreground outline-none placeholder:text-muted-foreground/60 transition-shadow focus:ring-2 focus:ring-ring/40";
 
 function LoginPage() {
   const [mode, setMode] = useState<"entrar" | "criar">("entrar");
@@ -35,17 +36,21 @@ function LoginPage() {
   }
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-sidebar px-4">
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-background px-4 py-10">
       <div className="gradient-horizon pointer-events-none absolute inset-x-0 top-0 h-1.5" />
+
       <div className="w-full max-w-md">
         <div className="mb-8 flex flex-col items-center text-center">
-          <div className="gradient-horizon grid size-12 place-items-center rounded-2xl font-display text-2xl text-sidebar-primary-foreground">
-            B
+          <div className="grid size-14 place-items-center rounded-full bg-white shadow-sm ring-1 ring-black/5">
+            <Droplet
+              className="size-7 fill-destructive text-destructive"
+              strokeWidth={2.5}
+            />
           </div>
-          <h1 className="mt-4 font-display text-3xl tracking-tight text-sidebar-accent-foreground">
-            Bloodlink
+          <h1 className="mt-4 font-display text-3xl tracking-wide text-foreground">
+            BLOODLINK
           </h1>
-          <p className="mt-1 text-sm text-sidebar-foreground/60">
+          <p className="mt-2 font-mono text-[11px] tracking-[0.2em] text-muted-foreground uppercase">
             Sistema de gestão de doações de sangue
           </p>
         </div>
@@ -57,7 +62,7 @@ function LoginPage() {
                 key={m}
                 type="button"
                 onClick={() => setMode(m)}
-                className={`rounded-lg py-2 text-sm font-medium transition-colors ${
+                className={`rounded-lg py-2 text-sm transition-colors ${
                   mode === m
                     ? "bg-card font-semibold text-foreground shadow-sm ring-1 ring-black/5"
                     : "text-muted-foreground hover:text-foreground"
@@ -71,14 +76,18 @@ function LoginPage() {
           <form onSubmit={handleSubmit} className="space-y-4">
             {mode === "criar" && (
               <label className="block space-y-1.5">
-                <span className="text-xs font-medium text-muted-foreground">
+                <span className="font-mono text-[10px] tracking-[0.15em] text-muted-foreground uppercase">
                   Nome completo
                 </span>
-                <input required placeholder="Seu nome" className={inputClass} />
+                <input
+                  required
+                  placeholder="Seu nome"
+                  className={inputClass}
+                />
               </label>
             )}
             <label className="block space-y-1.5">
-              <span className="text-xs font-medium text-muted-foreground">
+              <span className="font-mono text-[10px] tracking-[0.15em] text-muted-foreground uppercase">
                 E-mail
               </span>
               <input
@@ -89,7 +98,7 @@ function LoginPage() {
               />
             </label>
             <label className="block space-y-1.5">
-              <span className="text-xs font-medium text-muted-foreground">
+              <span className="font-mono text-[10px] tracking-[0.15em] text-muted-foreground uppercase">
                 Senha
               </span>
               <input
@@ -101,7 +110,7 @@ function LoginPage() {
             </label>
             {mode === "criar" && (
               <label className="block space-y-1.5">
-                <span className="text-xs font-medium text-muted-foreground">
+                <span className="font-mono text-[10px] tracking-[0.15em] text-muted-foreground uppercase">
                   Perfil de acesso
                 </span>
                 <select className={inputClass} defaultValue="gestor">
@@ -111,17 +120,27 @@ function LoginPage() {
                 </select>
               </label>
             )}
+            {mode === "entrar" && (
+              <div className="flex justify-end">
+                <button
+                  type="button"
+                  className="text-xs font-medium text-primary hover:underline"
+                >
+                  Esqueci minha senha
+                </button>
+              </div>
+            )}
             <button
               type="submit"
-              className="gradient-horizon w-full rounded-xl py-3 font-display text-sm tracking-wide text-sidebar-primary-foreground transition-opacity hover:opacity-90"
+              className="w-full rounded-xl bg-primary py-3 font-display text-sm tracking-wide text-primary-foreground shadow-sm transition-opacity hover:opacity-90"
             >
-              {mode === "entrar" ? "Entrar no painel" : "Criar conta"}
+              {mode === "entrar" ? "ENTRAR NO PAINEL" : "CRIAR CONTA"}
             </button>
           </form>
         </div>
 
-        <p className="mt-6 text-center text-xs text-sidebar-foreground/50">
-          <Link to="/" className="text-sidebar-primary hover:underline">
+        <p className="mt-6 text-center text-xs text-muted-foreground">
+          <Link to="/" className="font-medium text-primary hover:underline">
             Voltar ao painel
           </Link>
         </p>
