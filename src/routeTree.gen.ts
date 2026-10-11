@@ -9,7 +9,6 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
 import { Route as AgendamentosRouteImport } from './routes/agendamentos'
 import { Route as CentrosRouteImport } from './routes/centros'
 import { Route as CheckinRouteImport } from './routes/checkin'
@@ -18,13 +17,9 @@ import { Route as DocumentosRouteImport } from './routes/documentos'
 import { Route as EncontrarRouteImport } from './routes/encontrar'
 import { Route as EstoqueRouteImport } from './routes/estoque'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as PainelRouteImport } from './routes/painel'
 import { Route as ReservasRouteImport } from './routes/reservas'
 
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AgendamentosRoute = AgendamentosRouteImport.update({
   id: '/agendamentos',
   path: '/agendamentos',
@@ -65,6 +60,11 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PainelRoute = PainelRouteImport.update({
+  id: '/painel',
+  path: '/painel',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ReservasRoute = ReservasRouteImport.update({
   id: '/reservas',
   path: '/reservas',
@@ -72,7 +72,6 @@ const ReservasRoute = ReservasRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
   '/agendamentos': typeof AgendamentosRoute
   '/centros': typeof CentrosRoute
   '/checkin': typeof CheckinRoute
@@ -81,10 +80,10 @@ export interface FileRoutesByFullPath {
   '/encontrar': typeof EncontrarRoute
   '/estoque': typeof EstoqueRoute
   '/login': typeof LoginRoute
+  '/painel': typeof PainelRoute
   '/reservas': typeof ReservasRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
   '/agendamentos': typeof AgendamentosRoute
   '/centros': typeof CentrosRoute
   '/checkin': typeof CheckinRoute
@@ -93,11 +92,11 @@ export interface FileRoutesByTo {
   '/encontrar': typeof EncontrarRoute
   '/estoque': typeof EstoqueRoute
   '/login': typeof LoginRoute
+  '/painel': typeof PainelRoute
   '/reservas': typeof ReservasRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
   '/agendamentos': typeof AgendamentosRoute
   '/centros': typeof CentrosRoute
   '/checkin': typeof CheckinRoute
@@ -106,12 +105,12 @@ export interface FileRoutesById {
   '/encontrar': typeof EncontrarRoute
   '/estoque': typeof EstoqueRoute
   '/login': typeof LoginRoute
+  '/painel': typeof PainelRoute
   '/reservas': typeof ReservasRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/'
     | '/agendamentos'
     | '/centros'
     | '/checkin'
@@ -120,10 +119,10 @@ export interface FileRouteTypes {
     | '/encontrar'
     | '/estoque'
     | '/login'
+    | '/painel'
     | '/reservas'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/'
     | '/agendamentos'
     | '/centros'
     | '/checkin'
@@ -132,10 +131,10 @@ export interface FileRouteTypes {
     | '/encontrar'
     | '/estoque'
     | '/login'
+    | '/painel'
     | '/reservas'
   id:
     | '__root__'
-    | '/'
     | '/agendamentos'
     | '/centros'
     | '/checkin'
@@ -144,11 +143,11 @@ export interface FileRouteTypes {
     | '/encontrar'
     | '/estoque'
     | '/login'
+    | '/painel'
     | '/reservas'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
   AgendamentosRoute: typeof AgendamentosRoute
   CentrosRoute: typeof CentrosRoute
   CheckinRoute: typeof CheckinRoute
@@ -157,18 +156,12 @@ export interface RootRouteChildren {
   EncontrarRoute: typeof EncontrarRoute
   EstoqueRoute: typeof EstoqueRoute
   LoginRoute: typeof LoginRoute
+  PainelRoute: typeof PainelRoute
   ReservasRoute: typeof ReservasRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/agendamentos': {
       id: '/agendamentos'
       path: '/agendamentos'
@@ -225,6 +218,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/painel': {
+      id: '/painel'
+      path: '/painel'
+      fullPath: '/painel'
+      preLoaderRoute: typeof PainelRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/reservas': {
       id: '/reservas'
       path: '/reservas'
@@ -236,7 +236,6 @@ declare module '@tanstack/react-router' {
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
   AgendamentosRoute: AgendamentosRoute,
   CentrosRoute: CentrosRoute,
   CheckinRoute: CheckinRoute,
@@ -245,6 +244,7 @@ const rootRouteChildren: RootRouteChildren = {
   EncontrarRoute: EncontrarRoute,
   EstoqueRoute: EstoqueRoute,
   LoginRoute: LoginRoute,
+  PainelRoute: PainelRoute,
   ReservasRoute: ReservasRoute,
 }
 export const routeTree = rootRouteImport

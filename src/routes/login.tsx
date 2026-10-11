@@ -32,7 +32,7 @@ function LoginPage() {
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
-    navigate({ to: "/" });
+    navigate({ to: "/painel" });
   }
 
   return (
@@ -140,7 +140,7 @@ function LoginPage() {
         </div>
 
         <p className="mt-6 text-center text-xs text-muted-foreground">
-          <Link to="/" className="font-medium text-primary hover:underline">
+          <Link to="/painel" className="font-medium text-primary hover:underline">
             Voltar ao painel
           </Link>
         </p>

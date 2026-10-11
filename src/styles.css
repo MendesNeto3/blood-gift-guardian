@@ -214,3 +214,18 @@
     font-family: var(--font-sans);
   }
 }
+
+.donation-hero {
+  height: 530px;
+}
+
+.donation-hero-shade {
+  background: linear-gradient(90deg, var(--card) 0%, color-mix(in oklab, var(--card) 94%, transparent) 23%, color-mix(in oklab, var(--card) 55%, transparent) 43%, transparent 65%);
+}
+
+@media (max-width: 640px) {
+  .donation-hero { height: 570px; }
+  .donation-hero-shade {
+    background: color-mix(in oklab, var(--card) 82%, transparent);
+  }
+}
