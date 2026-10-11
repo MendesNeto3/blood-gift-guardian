@@ -8,7 +8,7 @@ import {
   stockPct,
 } from "../lib/mock-data";
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/painel")({
   head: () => ({
     meta: [
       { title: "Painel — Bloodlink" },
