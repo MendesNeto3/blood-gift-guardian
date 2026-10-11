@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as IndexRouteImport } from './routes/index'
 import { Route as AgendamentosRouteImport } from './routes/agendamentos'
 import { Route as CentrosRouteImport } from './routes/centros'
 import { Route as CheckinRouteImport } from './routes/checkin'
@@ -20,6 +21,11 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as PainelRouteImport } from './routes/painel'
 import { Route as ReservasRouteImport } from './routes/reservas'
 
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AgendamentosRoute = AgendamentosRouteImport.update({
   id: '/agendamentos',
   path: '/agendamentos',
@@ -72,6 +78,7 @@ const ReservasRoute = ReservasRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
+  '/': typeof IndexRoute
   '/agendamentos': typeof AgendamentosRoute
   '/centros': typeof CentrosRoute
   '/checkin': typeof CheckinRoute
@@ -84,6 +91,7 @@ export interface FileRoutesByFullPath {
   '/reservas': typeof ReservasRoute
 }
 export interface FileRoutesByTo {
+  '/': typeof IndexRoute
   '/agendamentos': typeof AgendamentosRoute
   '/centros': typeof CentrosRoute
   '/checkin': typeof CheckinRoute
@@ -97,6 +105,7 @@ export interface FileRoutesByTo {
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
   '/agendamentos': typeof AgendamentosRoute
   '/centros': typeof CentrosRoute
   '/checkin': typeof CheckinRoute
@@ -111,6 +120,7 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
+    | '/'
     | '/agendamentos'
     | '/centros'
     | '/checkin'
@@ -123,6 +133,7 @@ export interface FileRouteTypes {
     | '/reservas'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/'
     | '/agendamentos'
     | '/centros'
     | '/checkin'
@@ -135,6 +146,7 @@ export interface FileRouteTypes {
     | '/reservas'
   id:
     | '__root__'
+    | '/'
     | '/agendamentos'
     | '/centros'
     | '/checkin'
@@ -148,6 +160,7 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
   AgendamentosRoute: typeof AgendamentosRoute
   CentrosRoute: typeof CentrosRoute
   CheckinRoute: typeof CheckinRoute
@@ -162,6 +175,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/agendamentos': {
       id: '/agendamentos'
       path: '/agendamentos'
@@ -236,6 +256,7 @@ declare module '@tanstack/react-router' {
 }
 
 const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
   AgendamentosRoute: AgendamentosRoute,
   CentrosRoute: CentrosRoute,
   CheckinRoute: CheckinRoute,
