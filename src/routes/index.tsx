@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Droplet, Heart, ShieldCheck, ClipboardCheck, Coffee, GlassWater, IdCard } from "lucide-react";
+import { ArrowRight, Droplet, Heart, ShieldCheck, ClipboardCheck, Coffee, GlassWater, IdCard, Users, Scale, HeartPulse, Moon, Ban } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import hero from "@/assets/donation-hero.jpg";
 import care from "@/assets/donation-care.jpg";
@@ -54,6 +54,38 @@ function DonationPage() {
               { icon: Droplet, title: "Cada tipo importa", text: "Todos os tipos sanguíneos são necessários para manter os estoques dos hemocentros." },
               { icon: ShieldCheck, title: "Cuidado em cada etapa", text: "A equipe de saúde acompanha você, da triagem até o final da doação." },
             ].map(({ icon: Icon, title, text }) => <div key={title} className="flex items-start gap-4"><Icon className="mt-1 size-6 shrink-0 text-primary" /><div><h2 className="text-sm font-semibold">{title}</h2><p className="mt-2 text-xs leading-6 text-muted-foreground">{text}</p></div></div>)}
+          </div>
+        </section>
+
+        <section className="border-b border-border bg-card">
+          <div className="mx-auto max-w-7xl px-5 py-14 md:px-10">
+            <p className="font-mono text-xs text-primary">QUEM PODE DOAR</p>
+            <h2 className="mt-3 font-display text-3xl">Confira se você pode fazer parte</h2>
+            <p className="mt-4 max-w-2xl text-sm leading-7 text-muted-foreground">Para doar, basta estar saudável e atender aos requisitos básicos abaixo. A confirmação final é feita pela equipe de saúde na triagem clínica.</p>
+            <div className="mt-9 grid gap-7 sm:grid-cols-2 lg:grid-cols-4">
+              {[
+                { icon: Users, title: "Idade de 16 a 69 anos", text: "Menores de 18 anos precisam de autorização e da presença do responsável legal." },
+                { icon: Scale, title: "A partir de 50 kg", text: "O peso mínimo ajuda a garantir que a doação seja segura para você." },
+                { icon: HeartPulse, title: "Estar bem de saúde", text: "Sem febre, feridas abertas ou sintomas de infecção no dia da doação." },
+                { icon: Moon, title: "Ter descansado", text: "Dormir pelo menos 6 horas na noite anterior e evitar esforço físico intenso." },
+              ].map(({ icon: Icon, title, text }) => <div key={title} className="border-t border-border pt-5"><Icon className="mb-4 size-7 text-primary" /><h3 className="font-semibold">{title}</h3><p className="mt-3 text-sm leading-7 text-muted-foreground">{text}</p></div>)}
+            </div>
+            <div className="mt-10 grid gap-7 md:grid-cols-2">
+              <div className="rounded-lg border border-border p-6">
+                <p className="flex items-center gap-2 font-semibold"><Ban className="size-5 text-primary" /> Impedimentos temporários</p>
+                <ul className="mt-4 space-y-3 text-sm leading-7 text-muted-foreground">
+                  <li>· Gripe, febre ou infecção recente.</li>
+                  <li>· Tatuagem, piercing ou procedimento estético nos últimos meses.</li>
+                  <li>· Gestação ou amamentação.</li>
+                  <li>· Doação recente: o intervalo é orientado pelo hemocentro.</li>
+                </ul>
+              </div>
+              <div className="rounded-lg border border-border p-6">
+                <p className="flex items-center gap-2 font-semibold"><ClipboardCheck className="size-5 text-primary" /> Na dúvida, fale com o hemocentro</p>
+                <p className="mt-4 text-sm leading-7 text-muted-foreground">Cada hemocentro confirma documentos, horários e condições específicas, inclusive para quem toma medicamentos ou tem histórico de saúde.</p>
+                <Button asChild variant="outline" className="mt-5 h-11 px-5"><Link to="/encontrar">Ver hemocentros próximos <ArrowRight /></Link></Button>
+              </div>
+            </div>
           </div>
         </section>
 
