@@ -1,6 +1,7 @@
 # Roadmap — Bloodlink
 
 ## Design
+- [ ] Página pública de doação com imagens, orientações e acesso ao login; preservar painel em /painel
 - [x] Direção escolhida: Chrome dusk data desk (v3), com destaque no nome da página ativa
 - [x] Tokens aplicados em src/styles.css (Anton/Inter/JetBrains Mono, gradiente horizon)
 
