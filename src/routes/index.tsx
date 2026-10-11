@@ -1,267 +1,111 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { PageHeader, HorizonButton } from "../components/AppShell";
-import {
-  appointments,
-  donors,
-  metrics,
-  stockLevels,
-  stockPct,
-} from "../lib/mock-data";
+import { ArrowRight, Droplet, Heart, ShieldCheck, ClipboardCheck, Coffee, GlassWater, IdCard } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import hero from "@/assets/donation-hero.jpg";
+import care from "@/assets/donation-care.jpg";
 
 export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "Painel — Bloodlink" },
-      {
-        name: "description",
-        content:
-          "Visão geral do hemocentro: doações, estoque por tipo sanguíneo, coletas e doadores recentes.",
-      },
-      { property: "og:title", content: "Painel — Bloodlink" },
-      {
-        property: "og:description",
-        content:
-          "Visão geral do hemocentro: doações, estoque por tipo sanguíneo, coletas e doadores recentes.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
-    ],
-  }),
-  component: DashboardPage,
+  head: () => ({ meta: [
+    { title: "Doação de sangue — Bloodlink" },
+    { name: "description", content: "Conheça a importância de doar sangue, prepare-se para a doação e acesse o seu hemocentro no Bloodlink." },
+    { property: "og:title", content: "Doação de sangue — Bloodlink" },
+    { property: "og:description", content: "Um gesto de cuidado que conecta vidas. Orientações sobre doação de sangue e acesso ao hemocentro." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary_large_image" },
+  ] }),
+  component: DonationPage,
 });
 
-const donorStatusLabel = {
-  elegivel: "Elegível",
-  aguardando: "Aguardando",
-  impedido: "Impedido",
-} as const;
-
-function DashboardPage() {
+function DonationPage() {
   return (
-    <div className="space-y-6">
-      <PageHeader
-        eyebrow="Painel operacional"
-        title="Visão geral do hemocentro"
-        action={<HorizonButton>Nova campanha</HorizonButton>}
-      />
-
-      <div className="gradient-horizon rounded-2xl p-1">
-        <div className="flex flex-wrap items-end justify-between gap-6 rounded-[14px] bg-background/95 p-6">
-          <div>
-            <p className="text-[11px] font-semibold tracking-[0.2em] text-primary uppercase">
-              Fluxo vital · hoje
-            </p>
-            <p className="mt-2 font-display text-4xl tracking-tight">
-              {metrics.todayDonations}{" "}
-              <span className="font-sans text-base text-muted-foreground">
-                doações até agora
-              </span>
-            </p>
-            <p className="mt-2 text-sm text-muted-foreground">
-              {metrics.donationsDelta} vs. semana anterior · 12 coletas ativas
-            </p>
-          </div>
-          <div className="flex gap-6">
-            <div className="text-right">
-              <p className="text-[11px] tracking-[0.15em] text-muted-foreground uppercase">
-                Estoque
-              </p>
-              <p className="font-display text-2xl">{metrics.stockHealth}%</p>
-            </div>
-            <div className="text-right">
-              <p className="text-[11px] tracking-[0.15em] text-muted-foreground uppercase">
-                Críticos
-              </p>
-              <p className="font-display text-2xl text-destructive">
-                {metrics.criticalTypes}
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <section className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        {[
-          {
-            label: "Doações / semana",
-            value: metrics.donationsWeek.toLocaleString("pt-BR"),
-            foot: metrics.donationsDelta,
-            footClass: "bg-success/10 text-success",
-          },
-          {
-            label: "Doadores ativos",
-            value: metrics.activeDonors.toLocaleString("pt-BR"),
-            foot: `${metrics.recurringDonors} recorrentes`,
-            footClass: "text-muted-foreground",
-          },
-          {
-            label: "Agendamentos",
-            value: String(metrics.upcomingAppointments),
-            foot: "próx. 7 dias",
-            footClass: "text-muted-foreground",
-          },
-          {
-            label: "Tipos críticos",
-            value: String(metrics.criticalTypes),
-            foot: "O-, AB+, AB-",
-            footClass: "text-muted-foreground",
-            critical: true,
-          },
-        ].map((m, i) => (
-          <div
-            key={m.label}
-            className="animate-rise rounded-2xl bg-card p-5 ring-1 ring-black/5"
-            style={{ animationDelay: `${i * 60}ms` }}
-          >
-            <p className="text-[11px] tracking-[0.15em] text-muted-foreground uppercase">
-              {m.label}
-            </p>
-            <p
-              className={`mt-2 font-display text-3xl ${m.critical ? "text-destructive" : ""}`}
-            >
-              {m.value}
-            </p>
-            <p
-              className={`mt-3 inline-flex items-center gap-1 rounded-full px-2 py-1 text-xs font-medium ${m.footClass}`}
-            >
-              {m.foot}
-            </p>
-          </div>
-        ))}
-      </section>
-
-      <section className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        <div className="rounded-2xl bg-card p-6 ring-1 ring-black/5 lg:col-span-2">
-          <div className="mb-5 flex items-center justify-between">
-            <h2 className="text-lg font-semibold tracking-tight">
-              Estoque por tipo
-            </h2>
-            <Link
-              to="/estoque"
-              className="text-sm font-medium text-primary hover:underline"
-            >
-              Gerenciar estoque
-            </Link>
-          </div>
-          <div className="space-y-4">
-            {stockLevels.slice(0, 5).map((s) => {
-              const pct = stockPct(s);
-              return (
-                <div key={s.type}>
-                  <div className="mb-1.5 flex items-center justify-between">
-                    <span className="text-sm font-medium">{s.type}</span>
-                    <span
-                      className={`font-mono text-xs ${s.status === "critico" ? "font-medium text-destructive" : "text-muted-foreground"}`}
-                    >
-                      {s.units} un ·{" "}
-                      {s.status === "critico" ? "crítico" : `${pct}%`}
-                    </span>
-                  </div>
-                  <div className="h-3 overflow-hidden rounded-full bg-background">
-                    <div
-                      className={`h-full rounded-full transition-all duration-500 ${s.status === "critico" ? "pulse-critical bg-destructive" : "bg-primary"}`}
-                      style={{ width: `${pct}%` }}
-                    />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        <div className="rounded-2xl bg-card p-6 ring-1 ring-black/5">
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-lg font-semibold tracking-tight">Coletas</h2>
-            <span className="font-mono text-xs text-muted-foreground">set</span>
-          </div>
-          <div className="mb-2 grid grid-cols-7 gap-1 text-center font-mono text-[11px] text-muted-foreground">
-            {["D", "S", "T", "Q", "Q", "S", "S"].map((d, i) => (
-              <span key={i}>{d}</span>
-            ))}
-          </div>
-          <div className="grid grid-cols-7 gap-1 text-center text-xs">
-            {Array.from({ length: 14 }, (_, i) => i + 1).map((day) => (
-              <span
-                key={day}
-                className={`rounded-lg py-1.5 ${day === 2 || day === 5 || day === 9 ? "gradient-horizon font-semibold text-sidebar-primary-foreground" : ""}`}
-              >
-                {day}
-              </span>
-            ))}
-          </div>
-          <div className="mt-5 space-y-2 border-t border-border pt-4">
-            {appointments.slice(0, 2).map((a) => (
-              <div key={a.id} className="flex items-center gap-3">
-                <span className="size-2 rounded-full bg-primary" />
-                <span className="text-xs">
-                  {a.donor} · {a.time} · {a.center}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="rounded-2xl bg-card p-6 ring-1 ring-black/5">
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold tracking-tight">
-            Doadores recentes
-          </h2>
-          <Link
-            to="/doadores"
-            className="text-sm font-medium text-primary hover:underline"
-          >
-            Ver todos
+    <div className="min-h-screen bg-background text-foreground">
+      <header className="border-b border-border bg-card">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-5 py-5 md:px-10">
+          <Link to="/" aria-label="Bloodlink — início" className="flex items-center gap-3">
+            <span className="grid size-11 place-items-center rounded-full border border-border bg-card"><Droplet className="size-6 fill-primary text-primary" /></span>
+            <span className="font-display text-2xl">BLOODLINK<span className="mt-0.5 block font-mono text-[9px] text-muted-foreground">CONECTANDO VIDAS</span></span>
           </Link>
+          <div className="flex items-center gap-4">
+            <span className="hidden text-right text-xs text-muted-foreground sm:block">Área do hemocentro<br /><span className="font-medium text-foreground">Acesse sua instituição</span></span>
+            <Button asChild className="h-11 px-5"><Link to="/login">Entre aqui <ArrowRight /></Link></Button>
+          </div>
         </div>
-        <div className="grid grid-cols-12 gap-4 border-b border-border px-4 pb-2 font-mono text-xs tracking-wider text-muted-foreground uppercase">
-          <span className="col-span-4">Doador</span>
-          <span className="col-span-2">Tipo</span>
-          <span className="col-span-3">Última doação</span>
-          <span className="col-span-2">Status</span>
-          <span className="col-span-1" />
-        </div>
-        <div className="divide-y divide-border">
-          {donors.slice(0, 4).map((d) => (
-            <div
-              key={d.name}
-              className="grid grid-cols-12 items-center gap-4 px-4 py-3 text-sm transition-colors hover:bg-background/60"
-            >
-              <span className="col-span-4 flex items-center gap-3">
-                <span className="grid size-8 place-items-center rounded-full bg-primary text-xs font-semibold text-primary-foreground shadow-sm">
-                  {d.initials}
-                </span>
-                <span className="font-medium">{d.name}</span>
-              </span>
-              <span className="col-span-2 font-mono">{d.type}</span>
-              <span className="col-span-3 text-muted-foreground">
-                {d.lastDonation}
-              </span>
-              <span className="col-span-2">
-                <span
-                  className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${
-                    d.status === "elegivel"
-                      ? "bg-success/10 text-success"
-                      : d.status === "aguardando"
-                        ? "bg-warning/15 text-warning-foreground"
-                        : "bg-destructive/10 text-destructive"
-                  }`}
-                >
-                  {donorStatusLabel[d.status]}
-                </span>
-              </span>
-              <span className="col-span-1 text-right">
-                <Link
-                  to="/agendamentos"
-                  className="font-medium text-primary hover:underline"
-                >
-                  Agendar
-                </Link>
-              </span>
+      </header>
+
+      <main>
+        <section className="donation-hero relative isolate overflow-hidden">
+          <img src={hero} alt="Doador sendo acompanhado por uma profissional de saúde durante uma doação de sangue" width={1536} height={1024} fetchPriority="high" className="absolute inset-0 -z-20 size-full object-cover object-right" />
+          <div className="donation-hero-shade absolute inset-0 -z-10" />
+          <div className="mx-auto flex h-full max-w-7xl items-center px-5 py-12 md:px-10">
+            <div className="max-w-md">
+              <p className="mb-5 flex items-center gap-2 font-mono text-xs text-primary"><span className="size-2 rounded-full bg-primary" /> UM GESTO QUE CONECTA VIDAS</p>
+              <h1 className="font-display text-5xl leading-[1.12] text-primary md:text-6xl">Doação de sangue</h1>
+              <p className="mt-5 text-xl font-semibold">O seu cuidado pode mudar uma história.</p>
+              <p className="mt-4 max-w-sm text-sm leading-7">Para quem precisa de uma transfusão, cada doação importa. Faça parte dessa corrente de solidariedade.</p>
+              <Button asChild className="mt-7 h-12 px-6"><Link to="/encontrar">Encontre um hemocentro <ArrowRight /></Link></Button>
             </div>
-          ))}
-        </div>
-      </section>
+          </div>
+        </section>
+
+        <section className="border-b border-border bg-card">
+          <div className="mx-auto grid max-w-7xl gap-7 px-5 py-8 md:grid-cols-3 md:px-10">
+            {[
+              { icon: Heart, title: "Vidas que continuam", text: "Doações ajudam pessoas em cirurgias, emergências e tratamentos de saúde." },
+              { icon: Droplet, title: "Cada tipo importa", text: "Todos os tipos sanguíneos são necessários para manter os estoques dos hemocentros." },
+              { icon: ShieldCheck, title: "Cuidado em cada etapa", text: "A equipe de saúde acompanha você, da triagem até o final da doação." },
+            ].map(({ icon: Icon, title, text }) => <div key={title} className="flex items-start gap-4"><Icon className="mt-1 size-6 shrink-0 text-primary" /><div><h2 className="text-sm font-semibold">{title}</h2><p className="mt-2 text-xs leading-6 text-muted-foreground">{text}</p></div></div>)}
+          </div>
+        </section>
+
+        <section className="mx-auto grid max-w-7xl items-center gap-10 px-5 py-14 md:grid-cols-2 md:px-10 md:py-20">
+          <div className="relative">
+            <img src={care} alt="Doadora e profissional de saúde em uma sala de coleta" width={1024} height={1024} loading="lazy" className="aspect-[6/5] w-full rounded-lg object-cover" />
+            <p className="mt-3 font-mono text-[9px] text-muted-foreground">IMAGENS ILUSTRATIVAS GERADAS POR IA</p>
+          </div>
+          <div>
+            <p className="font-mono text-xs text-primary">POR QUE DOAR?</p>
+            <h2 className="mt-3 font-display text-3xl leading-tight md:text-4xl">Sangue não se fabrica.<br />Solidariedade se compartilha.</h2>
+            <p className="mt-6 text-sm leading-7 text-muted-foreground">Os hemocentros dependem de doações voluntárias para atender quem precisa. Pessoas em tratamento de câncer, pacientes com doenças do sangue e vítimas de acidentes podem necessitar de transfusões.</p>
+            <p className="mt-4 text-sm leading-7 text-muted-foreground">Doar regularmente, respeitando os intervalos e a orientação da equipe de saúde, ajuda a manter essa rede de cuidado disponível.</p>
+            <div className="mt-6 border-l-2 border-primary pl-4 text-sm font-medium text-primary">Uma atitude sua. Uma nova chance para alguém.</div>
+          </div>
+        </section>
+
+        <section className="border-y border-border bg-card">
+          <div className="mx-auto max-w-7xl px-5 py-14 md:px-10">
+            <p className="font-mono text-xs text-primary">ANTES DE DOAR</p>
+            <h2 className="mt-3 font-display text-3xl">Prepare-se para esse gesto</h2>
+            <div className="mt-8 grid gap-7 sm:grid-cols-3">
+              {[
+                { icon: Coffee, title: "Alimente-se bem", text: "Não vá em jejum. Prefira alimentos leves e evite alimentos gordurosos antes da doação." },
+                { icon: GlassWater, title: "Hidrate-se", text: "Beba água e cuide do seu descanso antes de ir ao hemocentro." },
+                { icon: IdCard, title: "Leve seu documento", text: "Apresente um documento oficial com foto. Confirme com o hemocentro os requisitos para menores de idade." },
+              ].map(({ icon: Icon, title, text }) => <div key={title} className="border-t border-border pt-5"><Icon className="mb-4 size-7 text-primary" /><h3 className="font-semibold">{title}</h3><p className="mt-3 text-sm leading-7 text-muted-foreground">{text}</p></div>)}
+            </div>
+            <p className="mt-8 text-xs leading-6 text-muted-foreground">As condições para doar e os impedimentos temporários devem ser confirmados com o hemocentro. A elegibilidade é avaliada na triagem clínica.</p>
+          </div>
+        </section>
+
+        <section className="mx-auto max-w-7xl px-5 py-14 md:px-10">
+          <p className="font-mono text-xs text-primary">ETAPAS DA DOAÇÃO</p>
+          <h2 className="mt-3 font-display text-3xl">Você não está sozinho nesse caminho</h2>
+          <div className="mt-9 grid gap-8 md:grid-cols-3">
+            {[
+              { title: "Recepção e cadastro", text: "A equipe confere seus documentos e registra as informações necessárias para a doação." },
+              { title: "Triagem clínica", text: "Uma entrevista individual e confidencial avalia suas condições de saúde para proteger você e quem receberá o sangue." },
+              { title: "Coleta e recuperação", text: "A coleta utiliza material estéril e descartável. Ao finalizar, siga as orientações da equipe sobre repouso, hidratação e alimentação." },
+            ].map((step, index) => <div key={step.title}><span className="font-display text-4xl text-primary/40">0{index + 1}</span><h3 className="mt-4 font-semibold">{step.title}</h3><p className="mt-3 text-sm leading-7 text-muted-foreground">{step.text}</p></div>)}
+          </div>
+        </section>
+
+        <section className="bg-primary text-primary-foreground">
+          <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-6 px-5 py-10 md:px-10">
+            <div><p className="mb-2 flex items-center gap-2 text-xs"><ClipboardCheck className="size-4" /> ÁREA DO HEMOCENTRO</p><h2 className="font-display text-3xl">Sua instituição faz parte dessa conexão.</h2><p className="mt-3 text-sm text-primary-foreground/80">Entre no Bloodlink para acessar a gestão do seu hemocentro.</p></div>
+            <Button asChild variant="outline" className="h-12 border-primary-foreground/30 bg-card px-6 text-primary"><Link to="/login">Entre aqui <ArrowRight /></Link></Button>
+          </div>
+        </section>
+      </main>
+      <footer className="mx-auto flex max-w-7xl flex-wrap justify-between gap-3 px-5 py-7 text-xs text-muted-foreground md:px-10"><span className="font-display text-lg text-primary">BLOODLINK</span><span>Conectando doadores, hemocentros e vidas.</span></footer>
     </div>
   );
 }

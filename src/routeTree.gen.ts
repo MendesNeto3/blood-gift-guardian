@@ -18,6 +18,7 @@ import { Route as DocumentosRouteImport } from './routes/documentos'
 import { Route as EncontrarRouteImport } from './routes/encontrar'
 import { Route as EstoqueRouteImport } from './routes/estoque'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as PainelRouteImport } from './routes/painel'
 import { Route as ReservasRouteImport } from './routes/reservas'
 
 const IndexRoute = IndexRouteImport.update({
@@ -65,6 +66,11 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PainelRoute = PainelRouteImport.update({
+  id: '/painel',
+  path: '/painel',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ReservasRoute = ReservasRouteImport.update({
   id: '/reservas',
   path: '/reservas',
@@ -81,6 +87,7 @@ export interface FileRoutesByFullPath {
   '/encontrar': typeof EncontrarRoute
   '/estoque': typeof EstoqueRoute
   '/login': typeof LoginRoute
+  '/painel': typeof PainelRoute
   '/reservas': typeof ReservasRoute
 }
 export interface FileRoutesByTo {
@@ -93,6 +100,7 @@ export interface FileRoutesByTo {
   '/encontrar': typeof EncontrarRoute
   '/estoque': typeof EstoqueRoute
   '/login': typeof LoginRoute
+  '/painel': typeof PainelRoute
   '/reservas': typeof ReservasRoute
 }
 export interface FileRoutesById {
@@ -106,6 +114,7 @@ export interface FileRoutesById {
   '/encontrar': typeof EncontrarRoute
   '/estoque': typeof EstoqueRoute
   '/login': typeof LoginRoute
+  '/painel': typeof PainelRoute
   '/reservas': typeof ReservasRoute
 }
 export interface FileRouteTypes {
@@ -120,6 +129,7 @@ export interface FileRouteTypes {
     | '/encontrar'
     | '/estoque'
     | '/login'
+    | '/painel'
     | '/reservas'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -132,6 +142,7 @@ export interface FileRouteTypes {
     | '/encontrar'
     | '/estoque'
     | '/login'
+    | '/painel'
     | '/reservas'
   id:
     | '__root__'
@@ -144,6 +155,7 @@ export interface FileRouteTypes {
     | '/encontrar'
     | '/estoque'
     | '/login'
+    | '/painel'
     | '/reservas'
   fileRoutesById: FileRoutesById
 }
@@ -157,6 +169,7 @@ export interface RootRouteChildren {
   EncontrarRoute: typeof EncontrarRoute
   EstoqueRoute: typeof EstoqueRoute
   LoginRoute: typeof LoginRoute
+  PainelRoute: typeof PainelRoute
   ReservasRoute: typeof ReservasRoute
 }
 
@@ -225,6 +238,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/painel': {
+      id: '/painel'
+      path: '/painel'
+      fullPath: '/painel'
+      preLoaderRoute: typeof PainelRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/reservas': {
       id: '/reservas'
       path: '/reservas'
@@ -245,6 +265,7 @@ const rootRouteChildren: RootRouteChildren = {
   EncontrarRoute: EncontrarRoute,
   EstoqueRoute: EstoqueRoute,
   LoginRoute: LoginRoute,
+  PainelRoute: PainelRoute,
   ReservasRoute: ReservasRoute,
 }
 export const routeTree = rootRouteImport
