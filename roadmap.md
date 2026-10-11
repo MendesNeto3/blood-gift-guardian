@@ -1,7 +1,7 @@
 # Roadmap — Bloodlink
 
 ## Design
-- [ ] Página pública de doação com imagens, orientações e acesso ao login; preservar painel em /painel
+- [x] Página pública de doação com imagens, orientações e acesso ao login; preservar painel em /painel
 - [x] Direção escolhida: Chrome dusk data desk (v3), com destaque no nome da página ativa
 - [x] Tokens aplicados em src/styles.css (Anton/Inter/JetBrains Mono, gradiente horizon)
 
@@ -15,7 +15,7 @@
 - [x] Documentos — /documentos
 - [x] Reservas — /reservas
 - [x] Doadores — /doadores
-- [x] Dashboard — /
+- [x] Dashboard — /painel
 
 ## Backend
 - [ ] Dados de exemplo no front; conectar microserviços reais depois
