@@ -11,3 +11,5 @@
 
 - Keep the public donation page at `/` and the existing operational dashboard at `/painel` so visitors can learn about donation without entering the management shell.
 - Public donation imagery uses bundled generated assets; reference screenshots inform layout but are never embedded as page images.
+- Donor accounts use Cloud Auth and owner-only profiles; health questionnaire answers are saved only after sign-in, never in auth metadata.
+- Donor appointments are private requests pending hemocenter confirmation, not guaranteed bookings; operational microservices remain separate.

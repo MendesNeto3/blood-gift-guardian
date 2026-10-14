@@ -10,7 +10,10 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AgendamentosRouteImport } from './routes/agendamentos'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as CadastroDoadorRouteImport } from './routes/cadastro-doador'
 import { Route as CentrosRouteImport } from './routes/centros'
 import { Route as CheckinRouteImport } from './routes/checkin'
 import { Route as DoadoresRouteImport } from './routes/doadores'
@@ -20,15 +23,31 @@ import { Route as EstoqueRouteImport } from './routes/estoque'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as PainelRouteImport } from './routes/painel'
 import { Route as ReservasRouteImport } from './routes/reservas'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as AuthenticatedAreaDoadorRouteImport } from './routes/_authenticated/area-doador'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AgendamentosRoute = AgendamentosRouteImport.update({
   id: '/agendamentos',
   path: '/agendamentos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CadastroDoadorRoute = CadastroDoadorRouteImport.update({
+  id: '/cadastro-doador',
+  path: '/cadastro-doador',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CentrosRoute = CentrosRouteImport.update({
@@ -76,10 +95,22 @@ const ReservasRoute = ReservasRouteImport.update({
   path: '/reservas',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedAreaDoadorRoute = AuthenticatedAreaDoadorRouteImport.update({
+  id: '/area-doador',
+  path: '/area-doador',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/agendamentos': typeof AgendamentosRoute
+  '/auth': typeof AuthRoute
+  '/cadastro-doador': typeof CadastroDoadorRoute
   '/centros': typeof CentrosRoute
   '/checkin': typeof CheckinRoute
   '/doadores': typeof DoadoresRoute
@@ -89,10 +120,14 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/painel': typeof PainelRoute
   '/reservas': typeof ReservasRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/area-doador': typeof AuthenticatedAreaDoadorRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/agendamentos': typeof AgendamentosRoute
+  '/auth': typeof AuthRoute
+  '/cadastro-doador': typeof CadastroDoadorRoute
   '/centros': typeof CentrosRoute
   '/checkin': typeof CheckinRoute
   '/doadores': typeof DoadoresRoute
@@ -102,11 +137,16 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/painel': typeof PainelRoute
   '/reservas': typeof ReservasRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/area-doador': typeof AuthenticatedAreaDoadorRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/agendamentos': typeof AgendamentosRoute
+  '/auth': typeof AuthRoute
+  '/cadastro-doador': typeof CadastroDoadorRoute
   '/centros': typeof CentrosRoute
   '/checkin': typeof CheckinRoute
   '/doadores': typeof DoadoresRoute
@@ -116,12 +156,16 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/painel': typeof PainelRoute
   '/reservas': typeof ReservasRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/_authenticated/area-doador': typeof AuthenticatedAreaDoadorRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/agendamentos'
+    | '/auth'
+    | '/cadastro-doador'
     | '/centros'
     | '/checkin'
     | '/doadores'
@@ -131,10 +175,14 @@ export interface FileRouteTypes {
     | '/login'
     | '/painel'
     | '/reservas'
+    | '/reset-password'
+    | '/area-doador'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/agendamentos'
+    | '/auth'
+    | '/cadastro-doador'
     | '/centros'
     | '/checkin'
     | '/doadores'
@@ -144,10 +192,15 @@ export interface FileRouteTypes {
     | '/login'
     | '/painel'
     | '/reservas'
+    | '/reset-password'
+    | '/area-doador'
   id:
     | '__root__'
     | '/'
+    | '/_authenticated'
     | '/agendamentos'
+    | '/auth'
+    | '/cadastro-doador'
     | '/centros'
     | '/checkin'
     | '/doadores'
@@ -157,11 +210,16 @@ export interface FileRouteTypes {
     | '/login'
     | '/painel'
     | '/reservas'
+    | '/reset-password'
+    | '/_authenticated/area-doador'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AgendamentosRoute: typeof AgendamentosRoute
+  AuthRoute: typeof AuthRoute
+  CadastroDoadorRoute: typeof CadastroDoadorRoute
   CentrosRoute: typeof CentrosRoute
   CheckinRoute: typeof CheckinRoute
   DoadoresRoute: typeof DoadoresRoute
@@ -171,6 +229,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   PainelRoute: typeof PainelRoute
   ReservasRoute: typeof ReservasRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -182,11 +241,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/agendamentos': {
       id: '/agendamentos'
       path: '/agendamentos'
       fullPath: '/agendamentos'
       preLoaderRoute: typeof AgendamentosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cadastro-doador': {
+      id: '/cadastro-doador'
+      path: '/cadastro-doador'
+      fullPath: '/cadastro-doador'
+      preLoaderRoute: typeof CadastroDoadorRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/centros': {
@@ -252,12 +332,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ReservasRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/area-doador': {
+      id: '/_authenticated/area-doador'
+      path: '/area-doador'
+      fullPath: '/area-doador'
+      preLoaderRoute: typeof AuthenticatedAreaDoadorRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAreaDoadorRoute: typeof AuthenticatedAreaDoadorRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAreaDoadorRoute: AuthenticatedAreaDoadorRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AgendamentosRoute: AgendamentosRoute,
+  AuthRoute: AuthRoute,
+  CadastroDoadorRoute: CadastroDoadorRoute,
   CentrosRoute: CentrosRoute,
   CheckinRoute: CheckinRoute,
   DoadoresRoute: DoadoresRoute,
@@ -267,6 +375,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   PainelRoute: PainelRoute,
   ReservasRoute: ReservasRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
