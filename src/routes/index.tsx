@@ -25,6 +25,7 @@ function DonationPage() {
             <span className="grid size-11 place-items-center rounded-full border border-border bg-card"><Droplet className="size-6 fill-primary text-primary" /></span>
             <span className="font-display text-2xl">BLOODLINK<span className="mt-0.5 block font-mono text-[9px] text-muted-foreground">CONECTANDO VIDAS</span></span>
           </Link>
+          <Button asChild variant="link"><Link to="/cadastro-doador">Quero ser um doador <Heart /></Link></Button>
           <div className="flex items-center gap-4">
             <span className="hidden text-right text-xs text-muted-foreground sm:block">Área do hemocentro<br /><span className="font-medium text-foreground">Acesse sua instituição</span></span>
             <Button asChild className="h-11 px-5"><Link to="/login">Entre aqui <ArrowRight /></Link></Button>
