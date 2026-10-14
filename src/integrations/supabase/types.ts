@@ -14,7 +14,75 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      donor_appointment_requests: {
+        Row: {
+          center_name: string
+          created_at: string
+          id: string
+          requested_at: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          center_name: string
+          created_at?: string
+          id?: string
+          requested_at: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          center_name?: string
+          created_at?: string
+          id?: string
+          requested_at?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          birth_date: string | null
+          blood_type: string
+          city: string
+          full_name: string
+          id: string
+          last_donation: string | null
+          phone: string
+          preferred_center: string
+          screening: Json
+          updated_at: string
+          weight_kg: number | null
+        }
+        Insert: {
+          birth_date?: string | null
+          blood_type?: string
+          city?: string
+          full_name?: string
+          id: string
+          last_donation?: string | null
+          phone?: string
+          preferred_center?: string
+          screening?: Json
+          updated_at?: string
+          weight_kg?: number | null
+        }
+        Update: {
+          birth_date?: string | null
+          blood_type?: string
+          city?: string
+          full_name?: string
+          id?: string
+          last_donation?: string | null
+          phone?: string
+          preferred_center?: string
+          screening?: Json
+          updated_at?: string
+          weight_kg?: number | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
