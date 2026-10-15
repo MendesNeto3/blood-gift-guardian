@@ -31,7 +31,7 @@ function LoginPage() {
         if (error) throw error;
         setMessage('Se houver uma conta com este e-mail, você receberá um link para redefinir a senha.');
       } else if (audience === 'hemocentro') {
-        if (!isServiceEnabled('auth')) throw new Error('O acesso institucional ainda aguarda a conexão com o serviço do seu hemocentro.');
+        if (!isServiceEnabled('auth')) { await navigate({ to: '/painel' }); return; } // modo demonstração até o serviço de autenticação ser conectado
         const session = await authService.login(email, password); setToken(session.token); await navigate({ to: '/painel' });
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
