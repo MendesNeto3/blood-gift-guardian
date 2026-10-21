@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PageHeader, HorizonButton } from "../components/AppShell";
-import { checkinQueue } from "../lib/mock-data";
+import { useState } from "react";
+import { QuickFormDialog, BLOOD_TYPES, formatDateBR, isPastDate, newId } from "../components/QuickFormDialog";
+import { checkinQueue as initial_checkinQueue, type CheckinEntry } from "../lib/mock-data";
 
 export const Route = createFileRoute("/checkin")({
   head: () => ({
@@ -31,12 +33,18 @@ const stages = [
 ] as const;
 
 function CheckinPage() {
+  const [checkinQueue, set_checkinQueue] = useState<CheckinEntry[]>(initial_checkinQueue);
+  const [open, setOpen] = useState(false);
   return (
     <div>
+      <QuickFormDialog open={open} onOpenChange={setOpen} eyebrow="Serviço de check-in" title="Fazer check-in" description="Registre a chegada do doador. Ele entra na fila de triagem." submitLabel="Confirmar check-in"
+        fields={[{ name: "donor", label: "Doador", placeholder: "Nome completo" }, { name: "type", label: "Tipo sanguíneo", type: "select", options: BLOOD_TYPES }]}
+        onSubmit={(v) => { const now = new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }); set_checkinQueue((p) => [...p, { ticket: newId("C"), donor: v.donor, type: v.type as CheckinEntry["type"], arrivedAt: now, stage: "triagem" }]); }} />
+
       <PageHeader
         eyebrow="Serviço de check-in"
         title="Fila de hoje"
-        action={<HorizonButton>Fazer check-in</HorizonButton>}
+        action={<HorizonButton onClick={() => setOpen(true)}>Fazer check-in</HorizonButton>}
       />
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">

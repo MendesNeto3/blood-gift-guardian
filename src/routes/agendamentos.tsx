@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PageHeader, HorizonButton } from "../components/AppShell";
-import { appointments } from "../lib/mock-data";
+import { useState } from "react";
+import { QuickFormDialog, BLOOD_TYPES, formatDateBR, isPastDate, newId } from "../components/QuickFormDialog";
+import { appointments as initial_appointments, type Appointment } from "../lib/mock-data";
 
 export const Route = createFileRoute("/agendamentos")({
   head: () => ({
@@ -36,12 +38,18 @@ const statusLabel = {
 } as const;
 
 function AgendamentosPage() {
+  const [appointments, set_appointments] = useState<Appointment[]>(initial_appointments);
+  const [open, setOpen] = useState(false);
   return (
     <div>
+      <QuickFormDialog open={open} onOpenChange={setOpen} eyebrow="Serviço de agendamento" title="Novo agendamento" description="Marque um horário de doação para um doador." submitLabel="Agendar"
+        fields={[{ name: "donor", label: "Doador", placeholder: "Nome completo" }, { name: "type", label: "Tipo sanguíneo", type: "select", options: BLOOD_TYPES }, { name: "date", label: "Data", type: "date" }, { name: "time", label: "Horário", type: "time" }, { name: "center", label: "Hemocentro", placeholder: "Ex.: Hemocentro Central" }]}
+        onSubmit={(v) => { if (isPastDate(v.date)) return "Escolha uma data a partir de hoje."; set_appointments((p) => [{ id: newId("AG"), donor: v.donor, type: v.type as Appointment["type"], date: formatDateBR(v.date), time: v.time, center: v.center, status: "pendente" }, ...p]); }} />
+
       <PageHeader
         eyebrow="Serviço de agendamento"
         title="Agenda de doações"
-        action={<HorizonButton>Novo agendamento</HorizonButton>}
+        action={<HorizonButton onClick={() => setOpen(true)}>Novo agendamento</HorizonButton>}
       />
 
       <div className="space-y-3">
