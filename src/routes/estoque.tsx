@@ -38,7 +38,7 @@ function EstoquePage() {
     <div>
       <QuickFormDialog open={open} onOpenChange={setOpen} eyebrow="Gerenciamento de estoque" title="Registrar entrada" description="Adicione bolsas coletadas ao estoque." submitLabel="Registrar"
         fields={[{ name: "type", label: "Tipo sanguíneo", type: "select", options: BLOOD_TYPES }, { name: "units", label: "Unidades", type: "number", min: 1, defaultValue: "1" }]}
-        onSubmit={(v) => { const n = Number(v.units); if (!Number.isInteger(n) || n < 1) return "Informe um número inteiro de unidades."; setStock((p) => p.map((s) => { if (s.type !== v.type) return s; const units = s.units + n; const pct = units / s.capacity; return { ...s, units, status: pct >= 0.7 ? "estavel" : pct >= 0.35 ? "atencao" : "critico" }; })); }} />
+        onSubmit={(v) => { const n = Number(v.units); if (!Number.isInteger(n) || n < 1) return "Informe um número inteiro de unidades."; setStock((p) => p.map((s) => { if (s.type !== v.type) return s; const units = s.units + n; const pct = units / s.capacity; return { ...s, units, status: pct >= 0.7 ? "estavel" : pct >= 0.35 ? "atencao" : "critico" }; })); return undefined; }} />
       <PageHeader
         eyebrow="Gerenciamento de estoque"
         title="Unidades por tipo sanguíneo"

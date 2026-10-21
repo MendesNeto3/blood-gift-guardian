@@ -44,7 +44,7 @@ function AgendamentosPage() {
     <div>
       <QuickFormDialog open={open} onOpenChange={setOpen} eyebrow="Serviço de agendamento" title="Novo agendamento" description="Marque um horário de doação para um doador." submitLabel="Agendar"
         fields={[{ name: "donor", label: "Doador", placeholder: "Nome completo" }, { name: "type", label: "Tipo sanguíneo", type: "select", options: BLOOD_TYPES }, { name: "date", label: "Data", type: "date" }, { name: "time", label: "Horário", type: "time" }, { name: "center", label: "Hemocentro", placeholder: "Ex.: Hemocentro Central" }]}
-        onSubmit={(v) => { if (isPastDate(v.date)) return "Escolha uma data a partir de hoje."; set_appointments((p) => [{ id: newId("AG"), donor: v.donor, type: v.type as Appointment["type"], date: formatDateBR(v.date), time: v.time, center: v.center, status: "pendente" }, ...p]); }} />
+        onSubmit={(v) => { if (isPastDate(v.date)) return "Escolha uma data a partir de hoje."; set_appointments((p) => [{ id: newId("AG"), donor: v.donor, type: v.type as Appointment["type"], date: formatDateBR(v.date), time: v.time, center: v.center, status: "pendente" }, ...p]); return undefined; }} />
 
       <PageHeader
         eyebrow="Serviço de agendamento"

@@ -38,7 +38,7 @@ function ReservasPage() {
     <div>
       <QuickFormDialog open={open} onOpenChange={setOpen} eyebrow="Serviço de reservas" title="Nova reserva" description="Reserve bolsas de sangue para um hospital." submitLabel="Criar reserva"
         fields={[{ name: "hospital", label: "Hospital", placeholder: "Ex.: Hospital das Clínicas" }, { name: "type", label: "Tipo sanguíneo", type: "select", options: BLOOD_TYPES }, { name: "units", label: "Unidades", type: "number", min: 1, defaultValue: "1" }, { name: "until", label: "Válida até", type: "date" }]}
-        onSubmit={(v) => { if (Number(v.units) < 1) return "Informe ao menos 1 unidade."; if (isPastDate(v.until)) return "A validade não pode estar no passado."; set_reservations((p) => [{ id: newId("RS"), hospital: v.hospital, type: v.type as Reservation["type"], units: Number(v.units), until: formatDateBR(v.until), status: "ativa" }, ...p]); }} />
+        onSubmit={(v) => { if (Number(v.units) < 1) return "Informe ao menos 1 unidade."; if (isPastDate(v.until)) return "A validade não pode estar no passado."; set_reservations((p) => [{ id: newId("RS"), hospital: v.hospital, type: v.type as Reservation["type"], units: Number(v.units), until: formatDateBR(v.until), status: "ativa" }, ...p]); return undefined; }} />
 
       <PageHeader
         eyebrow="Serviço de reservas"
