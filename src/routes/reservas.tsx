@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { HorizonButton, PageHeader } from "../components/AppShell";
-import { reservations } from "../lib/mock-data";
+import { useState } from "react";
+import { QuickFormDialog, BLOOD_TYPES, formatDateBR, isPastDate, newId } from "../components/QuickFormDialog";
+import { reservations as initial_reservations, type Reservation } from "../lib/mock-data";
 
 export const Route = createFileRoute("/reservas")({
   head: () => ({
@@ -30,12 +32,18 @@ const statusMeta = {
 } as const;
 
 function ReservasPage() {
+  const [reservations, set_reservations] = useState<Reservation[]>(initial_reservations);
+  const [open, setOpen] = useState(false);
   return (
     <div>
+      <QuickFormDialog open={open} onOpenChange={setOpen} eyebrow="Serviço de reservas" title="Nova reserva" description="Reserve bolsas de sangue para um hospital." submitLabel="Criar reserva"
+        fields={[{ name: "hospital", label: "Hospital", placeholder: "Ex.: Hospital das Clínicas" }, { name: "type", label: "Tipo sanguíneo", type: "select", options: BLOOD_TYPES }, { name: "units", label: "Unidades", type: "number", min: 1, defaultValue: "1" }, { name: "until", label: "Válida até", type: "date" }]}
+        onSubmit={(v) => { if (Number(v.units) < 1) return "Informe ao menos 1 unidade."; if (isPastDate(v.until)) return "A validade não pode estar no passado."; set_reservations((p) => [{ id: newId("RS"), hospital: v.hospital, type: v.type as Reservation["type"], units: Number(v.units), until: formatDateBR(v.until), status: "ativa" }, ...p]); return undefined; }} />
+
       <PageHeader
         eyebrow="Serviço de reservas"
         title="Reservas de unidades"
-        action={<HorizonButton>Nova reserva</HorizonButton>}
+        action={<HorizonButton onClick={() => setOpen(true)}>Nova reserva</HorizonButton>}
       />
 
       <div className="rounded-2xl bg-card ring-1 ring-black/5">

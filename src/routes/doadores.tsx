@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PageHeader, HorizonButton } from "../components/AppShell";
-import { donors } from "../lib/mock-data";
+import { useState } from "react";
+import { QuickFormDialog, BLOOD_TYPES, formatDateBR, isPastDate, newId } from "../components/QuickFormDialog";
+import { donors as initial_donors, type Donor } from "../lib/mock-data";
 
 export const Route = createFileRoute("/doadores")({
   head: () => ({
@@ -30,12 +32,18 @@ const statusLabel = {
 } as const;
 
 function DoadoresPage() {
+  const [donors, set_donors] = useState<Donor[]>(initial_donors);
+  const [open, setOpen] = useState(false);
   return (
     <div>
+      <QuickFormDialog open={open} onOpenChange={setOpen} eyebrow="Serviço de doadores" title="Novo doador" description="Cadastre um doador no hemocentro." submitLabel="Cadastrar doador"
+        fields={[{ name: "name", label: "Nome completo", placeholder: "Ex.: Ana Souza" }, { name: "type", label: "Tipo sanguíneo", type: "select", options: BLOOD_TYPES }, { name: "status", label: "Situação", type: "select", options: ["Elegível", "Aguardando", "Impedido"] }]}
+        onSubmit={(v) => { const parts = v.name.split(/\s+/).filter(Boolean); if (parts.length < 2) return "Informe nome e sobrenome."; const status = ({ "Elegível": "elegivel", "Aguardando": "aguardando", "Impedido": "impedido" } as const)[v.status as "Elegível"]; set_donors((p) => [{ name: v.name, initials: ((parts[0] ?? "")[0]! + (parts[parts.length - 1] ?? "")[0]!).toUpperCase(), type: v.type as Donor["type"], lastDonation: "—", status, total: 0 }, ...p]); return undefined; }} />
+
       <PageHeader
         eyebrow="Base de doadores"
         title="Doadores cadastrados"
-        action={<HorizonButton>Novo doador</HorizonButton>}
+        action={<HorizonButton onClick={() => setOpen(true)}>Novo doador</HorizonButton>}
       />
 
       <div className="rounded-2xl bg-card ring-1 ring-black/5">

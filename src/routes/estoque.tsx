@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PageHeader, HorizonButton } from "../components/AppShell";
-import { stockLevels, stockPct, type StockStatus } from "../lib/mock-data";
+import { useState } from "react";
+import { QuickFormDialog, BLOOD_TYPES, formatDateBR, isPastDate, newId } from "../components/QuickFormDialog";
+import { stockLevels as initialStock, stockPct, type StockStatus, type StockLevel } from "../lib/mock-data";
 
 export const Route = createFileRoute("/estoque")({
   head: () => ({
@@ -30,12 +32,17 @@ const statusMeta: Record<StockStatus, { label: string; chip: string }> = {
 };
 
 function EstoquePage() {
+  const [stockLevels, setStock] = useState<StockLevel[]>(initialStock);
+  const [open, setOpen] = useState(false);
   return (
     <div>
+      <QuickFormDialog open={open} onOpenChange={setOpen} eyebrow="Gerenciamento de estoque" title="Registrar entrada" description="Adicione bolsas coletadas ao estoque." submitLabel="Registrar"
+        fields={[{ name: "type", label: "Tipo sanguíneo", type: "select", options: BLOOD_TYPES }, { name: "units", label: "Unidades", type: "number", min: 1, defaultValue: "1" }]}
+        onSubmit={(v) => { const n = Number(v.units); if (!Number.isInteger(n) || n < 1) return "Informe um número inteiro de unidades."; setStock((p) => p.map((s) => { if (s.type !== v.type) return s; const units = s.units + n; const pct = units / s.capacity; return { ...s, units, status: pct >= 0.7 ? "estavel" : pct >= 0.35 ? "atencao" : "critico" }; })); return undefined; }} />
       <PageHeader
         eyebrow="Gerenciamento de estoque"
         title="Unidades por tipo sanguíneo"
-        action={<HorizonButton>Registrar entrada</HorizonButton>}
+        action={<HorizonButton onClick={() => setOpen(true)}>Registrar entrada</HorizonButton>}
       />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
