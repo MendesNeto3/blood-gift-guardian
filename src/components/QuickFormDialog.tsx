@@ -4,8 +4,8 @@ import { Button } from "@/components/ui/button";
 
 export const BLOOD_TYPES = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"] as const;
 
-export type Field = {
-  name: string;
+export type Field<K extends string = string> = {
+  name: K;
   label: string;
   type?: "text" | "number" | "date" | "time" | "select";
   options?: readonly string[];
@@ -17,7 +17,7 @@ export type Field = {
 const field =
   "h-11 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring";
 
-export function QuickFormDialog({
+export function QuickFormDialog<K extends string>({
   open, onOpenChange, eyebrow, title, description, fields, submitLabel, onSubmit,
 }: {
   open: boolean;
@@ -25,17 +25,17 @@ export function QuickFormDialog({
   eyebrow: string;
   title: string;
   description: string;
-  fields: Field[];
+  fields: Field<K>[];
   submitLabel: string;
   /** Retorne uma mensagem de erro para impedir o envio. */
-  onSubmit: (values: Record<string, string>) => string | void;
+  onSubmit: (values: Record<K, string>) => string | void;
 }) {
   const [error, setError] = useState("");
   function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const values = Object.fromEntries(
       Array.from(new FormData(e.currentTarget)).map(([k, v]) => [k, String(v).trim()]),
-    );
+    ) as Record<K, string>;
     const err = onSubmit(values);
     if (err) { setError(err); return; }
     setError("");
