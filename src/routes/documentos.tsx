@@ -1,7 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { FileText, Upload } from "lucide-react";
 import { HorizonButton, PageHeader } from "../components/AppShell";
-import { documents } from "../lib/mock-data";
+import { useState } from "react";
+import { documents as initialDocs } from "../lib/mock-data";
+import { UploadDocumentDialog } from "../components/UploadDocumentDialog";
 
 export const Route = createFileRoute("/documentos")({
   head: () => ({
@@ -32,13 +34,16 @@ const categoryLabel = {
 } as const;
 
 function DocumentosPage() {
+  const [documents, setDocuments] = useState(initialDocs);
+  const [open, setOpen] = useState(false);
   return (
     <div>
+      <UploadDocumentDialog open={open} onOpenChange={setOpen} onUploaded={(d) => setDocuments((p) => [...d, ...p])} />
       <PageHeader
         eyebrow="Serviço de documentos"
         title="Arquivos armazenados"
         action={
-          <HorizonButton>
+          <HorizonButton onClick={() => setOpen(true)}>
             <span className="inline-flex items-center gap-2">
               <Upload className="size-4" /> Enviar documento
             </span>
