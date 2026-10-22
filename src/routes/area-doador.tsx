@@ -9,7 +9,7 @@ import { readDonorArea, saveDonorProfile, type DonorFormData } from '@/lib/donor
 import { supabase } from '@/integrations/supabase/client';
 import { centers } from '@/lib/mock-data';
 
-export const Route = createFileRoute('/_authenticated/area-doador')({ head: () => ({ meta: [
+export const Route = createFileRoute('/area-doador')({ ssr: false, head: () => ({ meta: [
   { title: 'Minha área de doador — Bloodlink' }, { name: 'description', content: 'Agende sua doação, encontre hemocentros, veja seu histórico e envie documentos.' },
   { property: 'og:title', content: 'Minha área de doador — Bloodlink' }, { property: 'og:description', content: 'Seu cuidado e seus horários em um só lugar.' }, { property: 'og:type', content: 'website' }, { name: 'twitter:card', content: 'summary' }, { name: 'robots', content: 'noindex' },
 ] }), component: DonorArea });
@@ -35,8 +35,11 @@ const demoHistory = [
 type Doc = { id: string; name: string; size: string; date: string };
 
 function DonorArea() {
-  const query = useQuery({ queryKey: ['donor-area'], queryFn: readDonorArea });
+  const query = useQuery({ queryKey: ['donor-area'], queryFn: readDonorArea, staleTime: Infinity });
   const client = useQueryClient(); const navigate = useNavigate();
+  const demo = query.data?.demo ?? false;
+  type Area = Awaited<ReturnType<typeof readDonorArea>>; type Appt = Area['appointments'][number];
+  const patch = (fn: (d: Area) => Area) => client.setQueryData<Area>(['donor-area'], d => (d ? fn(d) : d));
   const [tab, setTab] = useState<Tab>('agendar'); const [busy, setBusy] = useState(false); const [message, setMessage] = useState('');
   const today = new Date(); today.setDate(today.getDate() + 1);
   const minDate = today.toISOString().slice(0, 10);
@@ -48,21 +51,32 @@ function DonorArea() {
   const taken = useMemo(() => new Set((query.data?.appointments ?? []).filter(a => a.status !== 'cancelado').map(a => new Date(a.requested_at).toISOString())), [query.data]);
 
   function go(t: Tab) { setTab(t); setMessage(''); }
-  async function signOut() { await client.cancelQueries(); client.clear(); await supabase.auth.signOut(); await navigate({ to: '/auth', replace: true }); }
+  async function signOut() { await client.cancelQueries(); client.clear(); await supabase.auth.signOut(); await navigate({ to: '/login', replace: true }); }
   async function save(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); setBusy(true); setMessage('');
-    try { await saveDonorProfile(extractDonorForm(event.currentTarget)); await query.refetch(); setMessage('Sua ficha foi salva.'); } catch { setMessage('Confira os dados da ficha e tente novamente.'); } finally { setBusy(false); }
+    try {
+      const form = extractDonorForm(event.currentTarget);
+      if (demo) { patch(d => ({ ...d, profile: { ...d.profile!, ...form, last_donation: form.last_donation || null, updated_at: new Date().toISOString() } })); }
+      else { await saveDonorProfile(form); await query.refetch(); }
+      setMessage('Sua ficha foi salva.');
+    } catch { setMessage('Confira os dados da ficha e tente novamente.'); } finally { setBusy(false); }
   }
   async function chooseCenter(name: string) {
-    if (!query.data) return; setBusy(true);
+    if (!query.data) return; setCenterChoice(name);
+    if (demo) { patch(d => ({ ...d, profile: { ...d.profile!, preferred_center: name } })); setMessage(`${name} agora é seu hemocentro de escolha.`); return; }
+    setBusy(true);
     const { error } = await supabase.from('profiles').update({ preferred_center: name, updated_at: new Date().toISOString() }).eq('id', query.data.user.id);
-    setCenterChoice(name); setMessage(error ? 'Não foi possível salvar seu hemocentro.' : `${name} agora é seu hemocentro de escolha.`);
+    setMessage(error ? 'Não foi possível salvar seu hemocentro.' : `${name} agora é seu hemocentro de escolha.`);
     await query.refetch(); setBusy(false);
   }
   async function book() {
     if (!query.data || !slot) return;
     const requestedAt = new Date(`${date}T${slot}`);
     if (requestedAt <= new Date()) { setMessage('Escolha uma data futura.'); return; }
+    if (demo) {
+      patch(d => ({ ...d, appointments: [...d.appointments, { id: crypto.randomUUID(), user_id: 'demo', center_name: center, requested_at: requestedAt.toISOString(), status: 'solicitado', created_at: new Date().toISOString() } as Appt].sort((a, b) => a.requested_at.localeCompare(b.requested_at)) }));
+      setSlot(''); setMessage('Horário solicitado. Aguarde a confirmação do hemocentro.'); return;
+    }
     setBusy(true); setMessage('');
     const { error } = await supabase.from('donor_appointment_requests').insert({ user_id: query.data.user.id, center_name: center, requested_at: requestedAt.toISOString() });
     if (error) setMessage('Não foi possível solicitar este horário. Tente novamente.');
@@ -70,7 +84,9 @@ function DonorArea() {
     setBusy(false);
   }
   async function cancel(id: string) {
-    if (!query.data) return; setBusy(true);
+    if (!query.data) return;
+    if (demo) { patch(d => ({ ...d, appointments: d.appointments.map(a => a.id === id ? { ...a, status: 'cancelado' } : a) })); setMessage('Solicitação cancelada.'); return; }
+    setBusy(true);
     const { error } = await supabase.from('donor_appointment_requests').update({ status: 'cancelado' }).eq('id', id).eq('user_id', query.data.user.id);
     setMessage(error ? 'Não foi possível cancelar. Tente novamente.' : 'Solicitação cancelada.'); await query.refetch(); setBusy(false);
   }
@@ -87,7 +103,7 @@ function DonorArea() {
   return <div className="min-h-screen bg-card">
     <header className="border-b border-border"><div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-6 py-6"><BloodlinkBrand /><Button variant="ghost" onClick={signOut}><LogOut /> Sair</Button></div></header>
     <main className="mx-auto max-w-6xl px-6 py-10">
-      <p className="font-mono text-xs text-primary">MINHA ÁREA DE DOADOR</p>
+      <p className="font-mono text-xs text-primary">MINHA ÁREA DE DOADOR{demo ? ' · MODO DEMONSTRAÇÃO' : ''}</p>
       <h1 className="mt-3 font-display text-3xl">Olá{p?.full_name ? `, ${p.full_name.split(' ')[0]}` : ''}.</h1>
       <p className="mt-2 text-sm text-muted-foreground">Seu hemocentro: <span className="font-semibold text-foreground">{p?.preferred_center || 'nenhum escolhido'}</span></p>
       <div className="mt-6 flex flex-wrap gap-2 border-b border-border pb-4">{tabs.map(t => <Button key={t.id} variant={tab === t.id ? 'default' : 'ghost'} onClick={() => go(t.id)}><t.icon />{t.label}</Button>)}</div>

@@ -34,8 +34,8 @@ function LoginPage() {
         if (!isServiceEnabled('auth')) { await navigate({ to: '/painel' }); return; } // modo demonstração até o serviço de autenticação ser conectado
         const session = await authService.login(email, password); setToken(session.token); await navigate({ to: '/painel' });
       } else {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) throw new Error('Confira seu e-mail e senha e confirme seu cadastro pelo e-mail recebido.');
+        // Protótipo: se não houver conta válida, entra na área do doador em modo demonstração
+        await supabase.auth.signInWithPassword({ email, password }).catch(() => null);
         await navigate({ to: '/area-doador' });
       }
     } catch (error) { setMessage(error instanceof Error ? error.message : 'Não foi possível entrar. Tente novamente.'); }

@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { supabase } from '@/integrations/supabase/client';
+import type { Database } from '@/integrations/supabase/types';
 
 export const donorSchema = z.object({
   full_name: z.string().trim().min(3).max(150), phone: z.string().trim().min(8).max(30),
@@ -19,15 +20,19 @@ export const screeningQuestions = [
   ['illness', 'Tem alguma doença, infecção ou condição de saúde relevante?'],
   ['medication', 'Usa medicamentos ou recebeu alguma vacina recentemente?'],
 ] as const;
-export async function readDonorArea() {
+type ProfileRow = Database['public']['Tables']['profiles']['Row'];
+type AppointmentRow = Database['public']['Tables']['donor_appointment_requests']['Row'];
+// Protótipo: sem conta, a área do doador abre com um doador de demonstração (nada é salvo)
+export const demoProfile: ProfileRow = { id: 'demo', full_name: 'Doador Demonstração', phone: '(11) 90000-0000', birth_date: '1995-05-10', city: 'São Paulo', blood_type: 'O+', weight_kg: 72, last_donation: '2026-06-14', preferred_center: 'Hemocentro Central', screening: {}, updated_at: new Date(0).toISOString() };
+export async function readDonorArea(): Promise<{ demo: boolean; user: { id: string; user_metadata?: Record<string, unknown> }; profile: ProfileRow | null; appointments: AppointmentRow[] }> {
   const { data: { user }, error } = await supabase.auth.getUser();
-  if (error || !user) throw new Error('Entre novamente para acessar sua ficha.');
+  if (error || !user) return { demo: true, user: { id: 'demo' }, profile: demoProfile, appointments: [] };
   const [profile, appointments] = await Promise.all([
     supabase.from('profiles').select('*').eq('id', user.id).maybeSingle(),
     supabase.from('donor_appointment_requests').select('*').eq('user_id', user.id).order('requested_at'),
   ]);
   if (profile.error || appointments.error) throw new Error('Não foi possível carregar seus dados. Tente novamente.');
-  return { user, profile: profile.data, appointments: appointments.data ?? [] };
+  return { demo: false, user, profile: profile.data, appointments: appointments.data ?? [] };
 }
 export async function saveDonorProfile(input: DonorFormData) {
   const data = donorSchema.parse(input);
