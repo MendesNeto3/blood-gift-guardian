@@ -51,7 +51,7 @@ function DonorArea() {
   const taken = useMemo(() => new Set((query.data?.appointments ?? []).filter(a => a.status !== 'cancelado').map(a => new Date(a.requested_at).toISOString())), [query.data]);
 
   function go(t: Tab) { setTab(t); setMessage(''); }
-  async function signOut() { await client.cancelQueries(); client.clear(); await supabase.auth.signOut(); await navigate({ to: '/auth', replace: true }); }
+  async function signOut() { await client.cancelQueries(); client.clear(); await supabase.auth.signOut(); await navigate({ to: '/login', replace: true }); }
   async function save(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); setBusy(true); setMessage('');
     try {
@@ -103,7 +103,7 @@ function DonorArea() {
   return <div className="min-h-screen bg-card">
     <header className="border-b border-border"><div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-6 py-6"><BloodlinkBrand /><Button variant="ghost" onClick={signOut}><LogOut /> Sair</Button></div></header>
     <main className="mx-auto max-w-6xl px-6 py-10">
-      <p className="font-mono text-xs text-primary">MINHA ÁREA DE DOADOR</p>
+      <p className="font-mono text-xs text-primary">MINHA ÁREA DE DOADOR{demo ? ' · MODO DEMONSTRAÇÃO' : ''}</p>
       <h1 className="mt-3 font-display text-3xl">Olá{p?.full_name ? `, ${p.full_name.split(' ')[0]}` : ''}.</h1>
       <p className="mt-2 text-sm text-muted-foreground">Seu hemocentro: <span className="font-semibold text-foreground">{p?.preferred_center || 'nenhum escolhido'}</span></p>
       <div className="mt-6 flex flex-wrap gap-2 border-b border-border pb-4">{tabs.map(t => <Button key={t.id} variant={tab === t.id ? 'default' : 'ghost'} onClick={() => go(t.id)}><t.icon />{t.label}</Button>)}</div>
