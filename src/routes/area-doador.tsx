@@ -35,8 +35,11 @@ const demoHistory = [
 type Doc = { id: string; name: string; size: string; date: string };
 
 function DonorArea() {
-  const query = useQuery({ queryKey: ['donor-area'], queryFn: readDonorArea });
+  const query = useQuery({ queryKey: ['donor-area'], queryFn: readDonorArea, staleTime: Infinity });
   const client = useQueryClient(); const navigate = useNavigate();
+  const demo = query.data?.demo ?? false;
+  type Area = Awaited<ReturnType<typeof readDonorArea>>; type Appt = Area['appointments'][number];
+  const patch = (fn: (d: Area) => Area) => client.setQueryData<Area>(['donor-area'], d => (d ? fn(d) : d));
   const [tab, setTab] = useState<Tab>('agendar'); const [busy, setBusy] = useState(false); const [message, setMessage] = useState('');
   const today = new Date(); today.setDate(today.getDate() + 1);
   const minDate = today.toISOString().slice(0, 10);
