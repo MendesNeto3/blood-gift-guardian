@@ -97,7 +97,7 @@ function DonorArea() {
     setDocs(d => [...ok.map(f => ({ id: crypto.randomUUID(), name: f.name, size: `${(f.size / 1024 / 1024).toFixed(1)} MB`, date: new Date().toLocaleDateString('pt-BR') })), ...d]);
   }
 
-  const initial: Partial<DonorFormData> = p ? { full_name: p.full_name, phone: p.phone, birth_date: p.birth_date ?? '', city: p.city, blood_type: p.blood_type as DonorFormData['blood_type'], ...(p.weight_kg === null ? {} : { weight_kg: p.weight_kg }), last_donation: p.last_donation ?? '', preferred_center: p.preferred_center, screening: p.screening as Record<string, string> } : { full_name: query.data?.user.user_metadata?.['full_name'] ?? '' };
+  const initial: Partial<DonorFormData> = p ? { full_name: p.full_name, phone: p.phone, birth_date: p.birth_date ?? '', city: p.city, blood_type: p.blood_type as DonorFormData['blood_type'], ...(p.weight_kg === null ? {} : { weight_kg: p.weight_kg }), last_donation: p.last_donation ?? '', preferred_center: p.preferred_center, screening: p.screening as Record<string, string> } : { full_name: String(query.data?.user.user_metadata?.['full_name'] ?? '') };
   const nearby = [...centers].sort((a, b) => (a.distanceKm ?? 0) - (b.distanceKm ?? 0));
 
   return <div className="min-h-screen bg-card">
