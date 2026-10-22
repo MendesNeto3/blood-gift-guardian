@@ -9,7 +9,7 @@ import { readDonorArea, saveDonorProfile, type DonorFormData } from '@/lib/donor
 import { supabase } from '@/integrations/supabase/client';
 import { centers } from '@/lib/mock-data';
 
-export const Route = createFileRoute('/_authenticated/area-doador')({ head: () => ({ meta: [
+export const Route = createFileRoute('/area-doador')({ ssr: false, head: () => ({ meta: [
   { title: 'Minha área de doador — Bloodlink' }, { name: 'description', content: 'Agende sua doação, encontre hemocentros, veja seu histórico e envie documentos.' },
   { property: 'og:title', content: 'Minha área de doador — Bloodlink' }, { property: 'og:description', content: 'Seu cuidado e seus horários em um só lugar.' }, { property: 'og:type', content: 'website' }, { name: 'twitter:card', content: 'summary' }, { name: 'robots', content: 'noindex' },
 ] }), component: DonorArea });
