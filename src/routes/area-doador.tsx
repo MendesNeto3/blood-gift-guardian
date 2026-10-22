@@ -51,18 +51,29 @@ function DonorArea() {
   async function signOut() { await client.cancelQueries(); client.clear(); await supabase.auth.signOut(); await navigate({ to: '/auth', replace: true }); }
   async function save(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); setBusy(true); setMessage('');
-    try { await saveDonorProfile(extractDonorForm(event.currentTarget)); await query.refetch(); setMessage('Sua ficha foi salva.'); } catch { setMessage('Confira os dados da ficha e tente novamente.'); } finally { setBusy(false); }
+    try {
+      const form = extractDonorForm(event.currentTarget);
+      if (demo) { patch(d => ({ ...d, profile: { ...d.profile!, ...form, last_donation: form.last_donation || null, updated_at: new Date().toISOString() } })); }
+      else { await saveDonorProfile(form); await query.refetch(); }
+      setMessage('Sua ficha foi salva.');
+    } catch { setMessage('Confira os dados da ficha e tente novamente.'); } finally { setBusy(false); }
   }
   async function chooseCenter(name: string) {
-    if (!query.data) return; setBusy(true);
+    if (!query.data) return; setCenterChoice(name);
+    if (demo) { patch(d => ({ ...d, profile: { ...d.profile!, preferred_center: name } })); setMessage(`${name} agora é seu hemocentro de escolha.`); return; }
+    setBusy(true);
     const { error } = await supabase.from('profiles').update({ preferred_center: name, updated_at: new Date().toISOString() }).eq('id', query.data.user.id);
-    setCenterChoice(name); setMessage(error ? 'Não foi possível salvar seu hemocentro.' : `${name} agora é seu hemocentro de escolha.`);
+    setMessage(error ? 'Não foi possível salvar seu hemocentro.' : `${name} agora é seu hemocentro de escolha.`);
     await query.refetch(); setBusy(false);
   }
   async function book() {
     if (!query.data || !slot) return;
     const requestedAt = new Date(`${date}T${slot}`);
     if (requestedAt <= new Date()) { setMessage('Escolha uma data futura.'); return; }
+    if (demo) {
+      patch(d => ({ ...d, appointments: [...d.appointments, { id: crypto.randomUUID(), user_id: 'demo', center_name: center, requested_at: requestedAt.toISOString(), status: 'solicitado', created_at: new Date().toISOString() } as Appt].sort((a, b) => a.requested_at.localeCompare(b.requested_at)) }));
+      setSlot(''); setMessage('Horário solicitado. Aguarde a confirmação do hemocentro.'); return;
+    }
     setBusy(true); setMessage('');
     const { error } = await supabase.from('donor_appointment_requests').insert({ user_id: query.data.user.id, center_name: center, requested_at: requestedAt.toISOString() });
     if (error) setMessage('Não foi possível solicitar este horário. Tente novamente.');
@@ -70,7 +81,9 @@ function DonorArea() {
     setBusy(false);
   }
   async function cancel(id: string) {
-    if (!query.data) return; setBusy(true);
+    if (!query.data) return;
+    if (demo) { patch(d => ({ ...d, appointments: d.appointments.map(a => a.id === id ? { ...a, status: 'cancelado' } : a) })); setMessage('Solicitação cancelada.'); return; }
+    setBusy(true);
     const { error } = await supabase.from('donor_appointment_requests').update({ status: 'cancelado' }).eq('id', id).eq('user_id', query.data.user.id);
     setMessage(error ? 'Não foi possível cancelar. Tente novamente.' : 'Solicitação cancelada.'); await query.refetch(); setBusy(false);
   }
