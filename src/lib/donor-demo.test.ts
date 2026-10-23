@@ -1,4 +1,6 @@
-import { describe, expect, test } from 'bun:test';
+import { describe, it as test } from 'node:test';
+import { strict as assert } from 'node:assert';
+const expect = (actual: boolean) => ({ toBe: (expected: boolean) => assert.equal(actual, expected) });
 import { isDemoSlotAvailable, isDemoDocumentAllowed, type DemoRequest } from './donor-demo';
 describe('Isolated donor prototype', () => {
   const date = '2099-01-15';
