@@ -20,6 +20,7 @@ function LoginPage() {
   const [visible, setVisible] = useState(false);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState('');
+  const [realDonorLogin, setRealDonorLogin] = useState(false);
   const navigate = useNavigate();
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); setBusy(true); setMessage('');
@@ -48,13 +49,18 @@ function LoginPage() {
         <BloodlinkBrand />
         <h1 className="mt-10 font-display text-3xl">Bom ter você aqui.</h1><p className="mt-3 text-sm text-muted-foreground">Entre na sua conta para continuar.</p>
         <div className="mb-7 mt-8 grid grid-cols-2 border-b border-border" role="tablist" aria-label="Tipo de acesso">{(['doador','hemocentro'] as const).map(item => <Button key={item} role="tab" aria-selected={audience === item} variant="ghost" onClick={() => { setAudience(item); setRecovery(false); setMessage(''); }} className={`h-12 rounded-none border-b-2 ${audience === item ? 'border-primary text-primary' : 'border-transparent text-muted-foreground'}`}>{item === 'doador' ? 'Sou doador' : 'Sou hemocentro'}</Button>)}</div>
-        <form onSubmit={handleSubmit} className="space-y-5">
+        {audience === 'doador' && !realDonorLogin ? <div className="space-y-5">
+          <p className="text-sm leading-6 text-muted-foreground">Estamos na fase de protótipo. Entre sem e-mail ou senha para conhecer seu espaço de doador com dados de exemplo.</p>
+          <Button asChild className="h-12 w-full"><Link to="/doador-demo">Entrar como doador<ArrowRight /></Link></Button>
+          <Button variant="link" className="w-full" onClick={() => setRealDonorLogin(true)}>Entrar na minha conta real</Button>
+        </div> : <form onSubmit={handleSubmit} className="space-y-5">
           <label className="block space-y-2 text-sm"><span className="font-medium">E-mail</span><input name="email" type="email" autoComplete="email" required placeholder="Seu e-mail" className={fieldClass} /></label>
           {!recovery && <label className="block space-y-2 text-sm"><span className="font-medium">Senha</span><div className="relative"><input name="password" type={visible ? 'text' : 'password'} autoComplete="current-password" required placeholder="Sua senha" className={`${fieldClass} pr-12`} /><Button type="button" size="icon" variant="ghost" aria-label={visible ? 'Ocultar senha' : 'Mostrar senha'} title={visible ? 'Ocultar senha' : 'Mostrar senha'} onClick={() => setVisible(!visible)} className="absolute right-1 top-1">{visible ? <EyeOff /> : <Eye />}</Button></div></label>}
           {audience === 'doador' && <div className="text-right"><Button type="button" variant="link" className="h-auto px-0 text-xs" onClick={() => { setRecovery(!recovery); setMessage(''); }}>{recovery ? 'Voltar para entrar' : 'Esqueci minha senha'}</Button></div>}
           {message && <p role="status" className="rounded-md bg-accent p-3 text-sm leading-6 text-accent-foreground">{message}</p>}
           <Button type="submit" disabled={busy} className="h-12 w-full">{busy ? 'Aguarde…' : recovery ? 'Enviar link de recuperação' : 'Entrar'}<ArrowRight /></Button>
-        </form>
+          {audience === 'doador' && <Button type="button" variant="link" className="w-full" onClick={() => { setRealDonorLogin(false); setRecovery(false); setMessage(''); }}>Voltar ao acesso de protótipo</Button>}
+        </form>}
         <p className="mt-7 text-center text-sm text-muted-foreground">Ainda não tem uma conta? <Link to="/cadastro-doador" className="font-semibold text-primary hover:underline">Seja um doador</Link></p>
       </div><p className="text-xs text-muted-foreground">BLOODLINK · Conectando vidas</p>
     </div>
