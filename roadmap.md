@@ -21,7 +21,8 @@
 - [ ] Dados de exemplo no front; conectar microserviços reais depois
 
 ## Área do doador
-- [ ] Login à esquerda, imagem de doação à direita e marca sem subtítulo
+- [x] Acesso de demonstração isolado, interface pessoal e verificação de agendamentos, hemocentros e documentos
+- [x] Login à esquerda, imagem de doação à direita e marca sem subtítulo
 - [ ] Cadastro próprio com ficha privada e confirmação de e-mail
 - [ ] Área pessoal com edição da ficha, hemocentro e solicitação/cancelamento de horário
 - [ ] Verificar acesso, formulários e privacidade

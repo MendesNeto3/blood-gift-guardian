@@ -146,7 +146,7 @@ function RootComponent() {
     return () => subscription.unsubscribe();
   }, [router, queryClient]);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const bare = ['/', '/login', '/auth', '/cadastro-doador', '/area-doador', '/reset-password'].includes(pathname);
+  const bare = ['/', '/login', '/auth', '/cadastro-doador', '/area-doador', '/doador-demo', '/reset-password'].includes(pathname);
 
   return (
     <QueryClientProvider client={queryClient}>
