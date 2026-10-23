@@ -16,6 +16,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as CadastroDoadorRouteImport } from './routes/cadastro-doador'
 import { Route as CentrosRouteImport } from './routes/centros'
 import { Route as CheckinRouteImport } from './routes/checkin'
+import { Route as DoadorDemoRouteImport } from './routes/doador-demo'
 import { Route as DoadoresRouteImport } from './routes/doadores'
 import { Route as DocumentosRouteImport } from './routes/documentos'
 import { Route as EncontrarRouteImport } from './routes/encontrar'
@@ -58,6 +59,11 @@ const CentrosRoute = CentrosRouteImport.update({
 const CheckinRoute = CheckinRouteImport.update({
   id: '/checkin',
   path: '/checkin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DoadorDemoRoute = DoadorDemoRouteImport.update({
+  id: '/doador-demo',
+  path: '/doador-demo',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DoadoresRoute = DoadoresRouteImport.update({
@@ -113,6 +119,7 @@ export interface FileRoutesByFullPath {
   '/cadastro-doador': typeof CadastroDoadorRoute
   '/centros': typeof CentrosRoute
   '/checkin': typeof CheckinRoute
+  '/doador-demo': typeof DoadorDemoRoute
   '/doadores': typeof DoadoresRoute
   '/documentos': typeof DocumentosRoute
   '/encontrar': typeof EncontrarRoute
@@ -130,6 +137,7 @@ export interface FileRoutesByTo {
   '/cadastro-doador': typeof CadastroDoadorRoute
   '/centros': typeof CentrosRoute
   '/checkin': typeof CheckinRoute
+  '/doador-demo': typeof DoadorDemoRoute
   '/doadores': typeof DoadoresRoute
   '/documentos': typeof DocumentosRoute
   '/encontrar': typeof EncontrarRoute
@@ -149,6 +157,7 @@ export interface FileRoutesById {
   '/cadastro-doador': typeof CadastroDoadorRoute
   '/centros': typeof CentrosRoute
   '/checkin': typeof CheckinRoute
+  '/doador-demo': typeof DoadorDemoRoute
   '/doadores': typeof DoadoresRoute
   '/documentos': typeof DocumentosRoute
   '/encontrar': typeof EncontrarRoute
@@ -168,6 +177,7 @@ export interface FileRouteTypes {
     | '/cadastro-doador'
     | '/centros'
     | '/checkin'
+    | '/doador-demo'
     | '/doadores'
     | '/documentos'
     | '/encontrar'
@@ -185,6 +195,7 @@ export interface FileRouteTypes {
     | '/cadastro-doador'
     | '/centros'
     | '/checkin'
+    | '/doador-demo'
     | '/doadores'
     | '/documentos'
     | '/encontrar'
@@ -203,6 +214,7 @@ export interface FileRouteTypes {
     | '/cadastro-doador'
     | '/centros'
     | '/checkin'
+    | '/doador-demo'
     | '/doadores'
     | '/documentos'
     | '/encontrar'
@@ -222,6 +234,7 @@ export interface RootRouteChildren {
   CadastroDoadorRoute: typeof CadastroDoadorRoute
   CentrosRoute: typeof CentrosRoute
   CheckinRoute: typeof CheckinRoute
+  DoadorDemoRoute: typeof DoadorDemoRoute
   DoadoresRoute: typeof DoadoresRoute
   DocumentosRoute: typeof DocumentosRoute
   EncontrarRoute: typeof EncontrarRoute
@@ -281,6 +294,13 @@ declare module '@tanstack/react-router' {
       path: '/checkin'
       fullPath: '/checkin'
       preLoaderRoute: typeof CheckinRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/doador-demo': {
+      id: '/doador-demo'
+      path: '/doador-demo'
+      fullPath: '/doador-demo'
+      preLoaderRoute: typeof DoadorDemoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/doadores': {
@@ -368,6 +388,7 @@ const rootRouteChildren: RootRouteChildren = {
   CadastroDoadorRoute: CadastroDoadorRoute,
   CentrosRoute: CentrosRoute,
   CheckinRoute: CheckinRoute,
+  DoadorDemoRoute: DoadorDemoRoute,
   DoadoresRoute: DoadoresRoute,
   DocumentosRoute: DocumentosRoute,
   EncontrarRoute: EncontrarRoute,
