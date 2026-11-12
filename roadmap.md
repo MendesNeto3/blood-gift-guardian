@@ -13,6 +13,7 @@
 - [x] Check-in — /checkin
 - [x] Estoque por tipo sanguíneo — /estoque
 - [x] Documentos — /documentos
+- [x] Envio de documentos do hemocentro com arquivos locais, abertura, download e remoção no protótipo
 - [x] Reservas — /reservas
 - [x] Doadores — /doadores
 - [x] Dashboard — /painel

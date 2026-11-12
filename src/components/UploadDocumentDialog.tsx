@@ -3,21 +3,13 @@ import { FileText, UploadCloud, X } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import type { StoredDocument } from "@/lib/mock-data";
-
-const MAX_BYTES = 10 * 1024 * 1024;
-const ACCEPT = ".pdf,.jpg,.jpeg,.png";
+import { createHemocenterDocuments, DOCUMENT_ACCEPT, formatDocumentSize as formatSize, isHemocenterDocumentAllowed, type HemocenterDocument } from "@/lib/hemocenter-documents";
 const categories: { value: StoredDocument["category"]; label: string }[] = [
   { value: "exame", label: "Exame" },
   { value: "termo", label: "Termo de consentimento" },
   { value: "triagem", label: "Ficha de triagem" },
   { value: "certificado", label: "Certificado" },
 ];
-
-function formatSize(bytes: number) {
-  return bytes >= 1024 * 1024
-    ? `${(bytes / 1024 / 1024).toFixed(1).replace(".", ",")} MB`
-    : `${Math.max(1, Math.round(bytes / 1024))} KB`;
-}
 
 const field =
   "h-11 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring";
@@ -29,7 +21,7 @@ export function UploadDocumentDialog({
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onUploaded: (docs: StoredDocument[]) => void;
+  onUploaded: (docs: HemocenterDocument[]) => void;
 }) {
   const input = useRef<HTMLInputElement>(null);
   const [files, setFiles] = useState<File[]>([]);
@@ -41,11 +33,11 @@ export function UploadDocumentDialog({
     const accepted: File[] = [];
     let rejected = false;
     for (const f of Array.from(list)) {
-      if (f.size > MAX_BYTES || !/\.(pdf|jpe?g|png)$/i.test(f.name)) rejected = true;
+      if (!isHemocenterDocumentAllowed(f)) rejected = true;
       else accepted.push(f);
     }
-    setError(rejected ? "Alguns arquivos foram ignorados: use PDF, JPG ou PNG de até 10 MB." : "");
-    setFiles((prev) => [...prev, ...accepted]);
+    setError(rejected ? "Alguns arquivos foram ignorados: use PDF, JPG ou PNG de até 10 MB, não vazios." : "");
+    setFiles((prev) => [...prev, ...accepted.filter(file => !prev.some(existing => existing.name === file.name && existing.size === file.size && existing.lastModified === file.lastModified))]);
   }
 
   function onDrop(e: DragEvent) {
@@ -68,24 +60,19 @@ export function UploadDocumentDialog({
     const data = new FormData(e.currentTarget);
     const owner = String(data.get("owner")).trim();
     const category = data.get("category") as StoredDocument["category"];
-    const uploadedAt = new Date().toLocaleDateString("pt-BR", { day: "2-digit", month: "short", year: "numeric" }).replace(/\./g, "").replace(/ de /g, " ");
-    onUploaded(
-      files.map((f, i) => ({
-        id: `DOC-${Date.now().toString().slice(-4)}${i}`,
-        name: f.name,
-        category,
-        size: formatSize(f.size),
-        uploadedAt,
-        owner,
-      })),
-    );
+    try {
+      onUploaded(createHemocenterDocuments(files, owner, category));
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : "Não foi possível adicionar os documentos.");
+      return;
+    }
     reset();
     onOpenChange(false);
   }
 
   return (
     <Dialog open={open} onOpenChange={(o) => { if (!o) reset(); onOpenChange(o); }}>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-lg">
         <DialogHeader>
           <p className="font-mono text-xs text-primary">SERVIÇO DE DOCUMENTOS</p>
           <DialogTitle className="font-display text-2xl">Enviar documento</DialogTitle>
@@ -96,28 +83,29 @@ export function UploadDocumentDialog({
             role="button"
             tabIndex={0}
             onClick={() => input.current?.click()}
-            onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && input.current?.click()}
+            onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); input.current?.click(); } }}
+            aria-label="Selecionar arquivos"
             onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
             onDragLeave={() => setDragging(false)}
             onDrop={onDrop}
-            className={`grid cursor-pointer place-items-center rounded-2xl border-2 border-dashed p-8 text-center transition-colors ${dragging ? "border-primary bg-accent" : "border-border bg-background hover:border-primary/60"}`}
+            className={`grid cursor-pointer place-items-center rounded-lg border-2 border-dashed p-6 text-center outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring ${dragging ? "border-primary bg-accent" : "border-border bg-background hover:border-primary/60"}`}
           >
             <UploadCloud className="size-9 text-primary" />
             <p className="mt-3 text-sm font-medium">Arraste os arquivos aqui ou clique para selecionar</p>
             <p className="mt-1 text-xs text-muted-foreground">PDF, JPG ou PNG · até 10 MB cada</p>
-            <input ref={input} type="file" multiple accept={ACCEPT} className="hidden" onChange={(e) => { addFiles(e.target.files); e.target.value = ""; }} />
+            <input ref={input} aria-label="Arquivos para envio" type="file" multiple accept={DOCUMENT_ACCEPT} className="hidden" onClick={e => e.stopPropagation()} onChange={(e) => { addFiles(e.target.files); e.target.value = ""; }} />
           </div>
 
           {files.length > 0 && (
             <ul className="max-h-40 space-y-2 overflow-auto">
               {files.map((f, i) => (
-                <li key={`${f.name}-${i}`} className="flex items-center gap-3 rounded-xl bg-background p-3 ring-1 ring-border">
+                <li key={`${f.name}-${i}`} className="flex items-center gap-3 rounded-lg bg-background p-3 ring-1 ring-border">
                   <FileText className="size-4 shrink-0 text-primary" />
                   <span className="min-w-0 flex-1 truncate text-sm">{f.name}</span>
                   <span className="font-mono text-xs text-muted-foreground">{formatSize(f.size)}</span>
-                  <button type="button" aria-label={`Remover ${f.name}`} onClick={() => setFiles((p) => p.filter((_, j) => j !== i))} className="text-muted-foreground hover:text-primary">
+                  <Button type="button" variant="ghost" size="icon" title={`Remover ${f.name}`} aria-label={`Remover ${f.name}`} onClick={() => setFiles((p) => p.filter((_, j) => j !== i))} className="shrink-0 text-muted-foreground hover:text-primary">
                     <X className="size-4" />
-                  </button>
+                  </Button>
                 </li>
               ))}
             </ul>
@@ -139,8 +127,8 @@ export function UploadDocumentDialog({
           {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
 
           <div className="flex justify-end gap-2">
-            <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>Cancelar</Button>
-            <Button type="submit">Enviar {files.length > 1 ? `${files.length} arquivos` : "documento"}</Button>
+            <Button type="button" variant="ghost" onClick={() => { reset(); onOpenChange(false); }}>Cancelar</Button>
+            <Button type="submit" disabled={!files.length}><UploadCloud />Enviar {files.length > 1 ? `${files.length} arquivos` : "documento"}</Button>
           </div>
         </form>
       </DialogContent>

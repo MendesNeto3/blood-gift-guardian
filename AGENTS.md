@@ -14,3 +14,4 @@
 - Donor accounts use Cloud Auth and owner-only profiles; health questionnaire answers are saved only after sign-in, never in auth metadata.
 - Donor appointments are private requests pending hemocenter confirmation, not guaranteed bookings; operational microservices remain separate.
 - Keep unauthenticated donor demonstrations at `/doador-demo`, using in-memory fictional data and local File objects only; never bypass the authenticated donor gate or call private data APIs from the demo.
+- Hemocenter prototype documents retain File objects in page-local state for opening and downloading; never persist health documents or upload them publicly without an authenticated institutional service.
